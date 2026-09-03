@@ -1,0 +1,21 @@
+Title: Multi-Fidelity Data-Based Optimization Algorithms
+Version: 1.0-0
+Date: 2026-09-29
+Author: Wenje Ma
+Maintainer: Wenje Ma <you@example.com>
+Description: Standalone R scripts implementing a budget-constrained
+  multi-fidelity Bayesian optimization pipeline based on the report in
+  tex/report_v1.qmd. The pipeline builds a nested maximum-projection
+  design for the low- and high-fidelity evaluations, optionally screens
+  inactive parameters with a maximum one-factor-at-a-time (MOFAT)
+  design, fits a Kennedy-O'Hagan auto-regressive fusion of the two
+  fidelity levels, and then adds points one at a time by Expected
+  Improvement until the high-fidelity budget is exhausted. Four
+  benchmark problems are provided in 1, 2, 4, and 8 dimensions (Joseph
+  1-D, Branin, an additive problem, and the borehole model), each with
+  an accurate high-fidelity function and a cheap biassed low-fidelity
+  version. Two experiments are included: a calibration sweep over the
+  number of high-fidelity points n2 and an ablation study that isolates
+  the contribution of the screening and fusion components across four
+  configurations.
+Imports: lhs, SFDesign, MOFAT, rkriging
