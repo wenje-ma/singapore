@@ -1,0 +1,232 @@
+
+---
+title: "Research on Multi-Fidelity Data-Based Optimization Algorithms"
+author: "Wenje Ma"
+institute: "Beijing Institute of Technology"
+date: "2026-10-05"
+format:
+  beamer:
+    theme: metropolis
+    pdf-engine: xelatex
+    include-in-header:
+      text: |
+        \metroset{block=fill}
+        \setbeamercolor{note title}{bg=white}
+        \setbeamercolor{note page}{bg=white}
+        \setbeamercolor{background canvas}{bg=black!2}
+        \DeclareMathOperator*{\argmin}{arg\,min}
+        \DeclareMathOperator*{\argmax}{arg\,max}
+        \setmathfont[version=bold]{XITSMath-Bold.otf}
+mainfont: "Latin Modern Roman"
+sansfont: "Latin Modern Roman"
+monofont: "Consolas"
+CJKmainfont: "SimHei"
+CJKsansfont: "SimHei"
+CJKmonofont: "SimHei"
+mathfont: "Latin Modern Math"
+---
+
+## What is multi-fidelity?
+
+- **Fidelity**: how *faithful* a test is
+- **High-fidelity**: *expensive*, but precise
+- **Low-fidelity**: *cheap*, but a little off
+- **Multi-fidelity**: use *both*
+
+How to use them together to find the best answer?
+
+## Here's my plan
+
+```{=latex}
+\setbeamertemplate{section in toc}[sections numbered]
+\tableofcontents[hideallsubsections]
+```
+
+# A quick story
+
+## Testing is expensive, few chances
+
+You work for a company, but ---
+
+- Tune parameters of an *experiment* --- every run costs money
+- More than 10 parameters, and they *affect each other*
+- Can't tune them *one at a time* --- need the best combination
+- Engines, materials, biology: the same story
+
+How to spend a tiny budget smartly?
+
+## Why is it so hard? Two reasons
+
+Two reasons:
+
+- **Black box**: only input and output, never the inside --- a simulation or test bench
+- **Budget**: an enormous parameter space, but only about 15 runs
+
+Use 15 runs to find the best point of a high-dimensional black box.
+
+## Good news: two fidelities
+
+Two fidelities:
+
+- **Low-fidelity**: cheap & fast, but *biased*
+- **High-fidelity**: accurate, but only 15 runs
+
+How do we use the cheap low-didelity runs to guide the expensive high-fidelity ones?
+
+## My simple idea
+
+My idea is simple:
+
+$$
+h_\mathrm{H}\left(\boldsymbol{x}\right)=h_\mathrm{L}\left(\boldsymbol{x}\right)+\delta\left(\boldsymbol{x}\right)
+$$
+
+Learn the correction $\delta_k$ from a few high-fidelity runs
+
+# Two simple ideas
+
+## V. Roshan Joseph
+
+::: {=latex}
+\begin{columns}[onlytextwidth]
+  \column{0.5\textwidth}
+  Where to put the first runs?
+
+  --- \textbf{maxpro design}
+  
+  How to add runs one at a time?
+
+  --- \textbf{sequential design}
+  \column{0.4\textwidth}
+  \begin{figure}[htbp]
+    \includegraphics[width=\linewidth]{../figures/1.jpg}
+    \caption*{V. Roshan Joseph}
+  \end{figure}
+\end{columns}
+:::
+
+## First piece: maxpro design
+
+::: {=latex}
+\begin{columns}[onlytextwidth]
+  \column{0.5\textwidth}
+    \textbf{Maxpro}:
+    
+    \textbf{maximum projection}. spread out in the full space, and in \emph{every low-dimensional shadow}.
+
+    \textbf{Critertion}:
+    
+    \begin{equation*}
+\min_D\sum_{i=1}^{n}\prod_{j\neq{i}}\frac{1}{\sum_{k=1}^p\left(x_{ik}-x_{jk}\right)^2}
+\end{equation*}    
+  \column{0.4\textwidth}
+  \begin{figure}[htbp]
+    \includegraphics[width=\linewidth]{../figures/2.pdf}
+    \caption*{The MaxPro Design}
+  \end{figure}
+\end{columns}
+:::
+
+## Second piece: Gaussian progress
+
+- A **normal distribution** describes *one number*: the average, and how spread out
+- A **Gaussian process** is the same idea, but for a *whole function*: a whole curve, plus *how unsure* we are at each point
+- That *uncertainty* is the guide --- test where we are *hopeful and uncertain*
+
+## The whole pipeline
+
+1. Choose **starting points** --- spread out evenly
+2. Feed **many cheap low-fidelity points**; the GP draws a *rough map*
+3. Run **one expensive high-fidelity test** where the map says the *destination*
+4*. *Repeat** --- the map gets sharper every round
+
+Map, guess, test, refine.
+
+## The formal question
+
+The formal question:
+
+$$
+\widehat{\boldsymbol{x}}\approx\argmin_{\boldsymbol{x}\in\left[0,1\right]^{p}}h_\mathrm{H}\left(\boldsymbol{x}\right)
+$$
+
+Find the best point using only **15 high-fidelity tests**.
+
+Three smaller questions:
+
+1. Does **combining the two fidelities** help?
+2. Does **screening** help --- which parameters matter, drop the rest?
+3. Does it still work in **high dimensions**?
+
+## How I measure success
+
+- Run the pipeline **20 times** from scratch
+- Take the **median** of the 20 best values
+- **Lower is better** in every figure
+
+# What I found
+
+## Result 1: combining fidelities is the key
+
+::: {=latex}
+\begin{columns}[onlytextwidth]
+  \column{0.5\textwidth}
+  Don't just run the expensive one --- \textbf{bring a cheap one along to help}.
+  \column{0.4\textwidth}
+    \begin{center}
+      \includegraphics[width=\linewidth]{../figures/3.pdf}
+    \end{center}
+\end{columns}
+:::
+
+## Result 2: screening is useless
+
+::: {=latex}
+\begin{columns}[onlytextwidth]
+  \column{0.5\textwidth}
+  Screening sounds like it saves work, but it \textbf{costs you accuracy}
+  \column{0.4\textwidth}
+    \begin{center}
+      \includegraphics[width=\linewidth]{../figures/4.pdf}
+    \end{center}
+\end{columns}
+:::
+
+## Result 3: high demensions fail
+
+::: {=latex}
+\begin{columns}[onlytextwidth]
+  \column{0.5\textwidth}
+  In eight demensions, \textbf{hign demensions fail} --- \textbf{the curse of demensionality}.
+  \column{0.4\textwidth}
+    \begin{center}
+      \includegraphics[width=\linewidth]{../figures/5.pdf}
+    \end{center}
+\end{columns}
+:::
+
+## All results in one picture
+
+::: {=latex}
+\begin{center}
+  \includegraphics[width=0.7\linewidth]{../figures/6.pdf}
+\end{center}
+:::
+
+# Where I'd like to go next
+
+## Three directions next
+
+1*. *When is screening trustworthy?**
+2*. *Break the curse of dimensionality**
+3*. *Push it into the real world**
+
+## Summary
+
+Don't just \textbf{run more high-fidelity tests} --- \textbf{make every single one count}. Let cheap low-fidelity runs do the \textbf{heavy lifting}.
+
+That's \textbf{multi-fidelity}.
+
+## {.standout}
+
+Thank you for your listening!
