@@ -1,0 +1,21 @@
+setwd("C:/Users/18904/Github/singapore/codes")
+if(!dir.exists("data"))dir.create("data")
+if(!dir.exists("../figures"))dir.create("../figures")
+if(!file.exists("data/2-plot.RData")){
+  p=2;n=7;library(SFDesign);library(lhs);set.seed(1)
+  D=maxpro.optim(randomLHS(n,p))$design
+  save(D,n,file="data/2-plot.RData")
+}
+load("data/2-plot.RData")
+pdf("../figures/2.pdf",width=4,height=4)
+oldpar=par(mar=c(1,1,1,1))
+plot(D,pch=16,cex=1.4,col="#222222",axes=FALSE,xlim=c(0,1),ylim=c(0,1),asp=1)
+d1=sort(D[,1]);l1=c(0,(d1[-1]+d1[-n])/2,1)
+d2=sort(D[,2]);l2=c(0,(d2[-1]+d2[-n])/2,1)
+for(i in 1:(n+1)){
+  segments(l1[i],0,l1[i],1,col="#bbbbbb",lwd=0.6)
+  segments(0,l2[i],1,l2[i],col="#bbbbbb",lwd=0.6)
+}
+box(col="#666666",lwd=0.8)
+par(oldpar)
+dev.off()
