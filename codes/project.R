@@ -1,0 +1,56 @@
+setwd("C:/Users/18904/Github/singapore/codes")
+library(lhs)
+project=function(fH,fL,p,xmin=rep(0,p),xmax=rep(1,p),screening=TRUE,multifidelity=TRUE,budget=15,cost=20,n2=3,m=3*p,nCandidate=5000,cand=NULL,seed=1){
+  set.seed(seed)
+  D1=NULL;yL=NULL
+  if(is.null(cand))cand=randomLHS(nCandidate,p)
+  mf=multifidelity
+  if(mf){
+    n1=floor((budget-n2)/2*cost)
+    if(n1>=n2&&n1>0){
+      nd=nested_design(n1,n2,p,seed);D1=nd$D1;D2=nd$D2
+      yL=apply(D1,1,fL);yH=apply(D2,1,fH)
+    }else{
+      D2=maxpro_design(n2,p,seed);yH=apply(D2,1,fH)
+      mf=FALSE;screening=FALSE
+    }
+  }else{
+    D2=maxpro_design(n2,p,seed);yH=apply(D2,1,fH)
+  }
+  S=1:p
+  if(screening){
+    if(p>1){
+      dm=mofat_design(p,m,seed)
+      d=rbind(dm$A,dm$C1,dm$C2)
+      mustar=MOFAT::measure(d,apply(d,1,fL))$mustar
+      S=which(mustar>median(mustar))
+      if(length(S)==0)S=1:p
+    }
+  }
+  if(mf){
+    fit=fit_KOH(D1[,S,drop=FALSE],yL,D2[,S,drop=FALSE],yH,TRUE)
+    used=n2+n1/cost+3*m/cost*screening
+  }else{
+    fit=list(fitL=Fit.Kriging(D2[,S,drop=FALSE],yH,kernel.parameters=list(type="Gaussian")),fitD=NULL)
+    used=n2+3*m/cost*screening
+  }
+  step=1+mf/cost
+  hmin=min(yH);best=hmin
+  while(used+step<=budget){
+    ei=apply(cand[,S,drop=FALSE],1,EI,hmin=hmin,fit=fit)
+    xnew=cand[which.max(ei),,drop=FALSE]
+    yH=c(yH,fH(as.numeric(xnew)));D2=rbind(D2,xnew)
+    if(mf){yL=c(yL,fL(as.numeric(xnew)));D1=rbind(D1,xnew)}
+    fit=if(mf){
+      fit_KOH(D1[,S,drop=FALSE],yL,D2[,S,drop=FALSE],yH,TRUE)
+    }else{
+      list(fitL=Fit.Kriging(D2[,S,drop=FALSE],yH,kernel.parameters=list(type="Gaussian")),fitD=NULL)
+    }
+    hmin=min(yH)
+    used=used+step
+    best=c(best,hmin)
+  }
+  xstar=D2[which.min(yH),,drop=FALSE]
+  list(xstar=xstar,fstar=min(yH),best=best,budget.track=used,nHF=length(yH),nLF=if(is.null(yL))0 else length(yL),S=S,screening=screening,seed=seed,
+       D2=D2,yH=yH,D1=if(exists("D1",inherits=FALSE))D1 else NULL,yL=yL)
+}

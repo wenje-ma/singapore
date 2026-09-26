@@ -1,0 +1,9 @@
+setwd("C:/Users/18904/Github/singapore/codes")
+fit_KOH=function(D1,yL,D2=NULL,yH=NULL,multifidelity=TRUE){
+  library(rkriging)
+  fitL=Fit.Kriging(D1,yL,kernel.parameters=list(type="Gaussian"))
+  if(!multifidelity)return(list(fitL=fitL,fitD=NULL))
+  delta=yH-Predict.Kriging(fitL,D2)$mean
+  fitD=Fit.Kriging(D2,delta,kernel.parameters=list(type="Gaussian"))
+  list(fitL=fitL,fitD=fitD)
+}
