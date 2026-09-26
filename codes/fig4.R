@@ -1,0 +1,17 @@
+setwd("C:/Users/18904/Github/singapore/codes")
+if(!dir.exists("data"))dir.create("data")
+if(!dir.exists("../figures"))dir.create("../figures")
+if(!file.exists("data/4-plot.RData")){
+  n1=100;n2=10;p=2;set.seed(1);library(SFDesign)
+  D1=maxpro.optim(maxproLHD(n1,p)$design)$design
+  D2=maxpro.remove(D1,n.remove=n1-n2,delta=1/n1^2)
+  save(D1,D2,file="data/4-plot.RData")
+}
+load("data/4-plot.RData")
+pdf("../figures/4.pdf",width=4,height=4)
+oldpar=par(mar=c(1,1,1,1))
+plot(D1,pch=16,cex=0.7,col="#bbbbbb",axes=FALSE,xlim=c(0,1),ylim=c(0,1),asp=1)
+points(D2,pch=2,cex=1.4,col="#222222",lwd=1.1)
+box(col="#666666",lwd=0.8)
+par(oldpar)
+dev.off()
