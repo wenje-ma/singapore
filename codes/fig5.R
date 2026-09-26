@@ -1,0 +1,55 @@
+setwd("C:/Users/18904/Github/singapore/codes")
+if(!dir.exists("data"))dir.create("data")
+if(!dir.exists("../figures"))dir.create("../figures")
+if(!file.exists("data/5-plot.RData")){
+  library(rkriging);set.seed(1)
+  f=function(x)sin(10*pi*x)/(1+64*(x-.25)^2)+x^2
+  EI=function(x,hmin,obj){
+    pred=Predict.Kriging(obj,cbind(x))
+    s=max(pred$sd,1e-10);u=(hmin-pred$mean)/s
+    s*(u*pnorm(u)+dnorm(u))
+  }
+  test=seq(0,1,length=301);true=f(test);n=8
+  D=((1:n)-.5)/n;y=f(D)
+  a=Fit.Kriging(D,y,kernel.parameters=list(type="Gaussian"))
+  pred=Predict.Kriging(a,test)
+  low=pred$mean-2*pred$sd;up=pred$mean+2*pred$sd
+  ei=apply(cbind(test),1,EI,hmin=min(y),obj=a)
+  xnew=test[which.max(ei)]
+  m.mean=pred$mean;m.low=low;m.up=up;m.ei=ei
+  for(i in 1:2){
+    D=c(D,xnew);y=c(y,f(xnew))
+    a=Fit.Kriging(D,y,kernel.parameters=list(type="Gaussian"))
+    pred=Predict.Kriging(a,test)
+    low=pred$mean-2*pred$sd;up=pred$mean+2*pred$sd
+    ei=apply(cbind(test),1,EI,hmin=min(y),obj=a)
+    xnew=test[which.max(ei)]
+    m.mean=cbind(m.mean,pred$mean);m.low=cbind(m.low,low)
+    m.up=cbind(m.up,up);m.ei=cbind(m.ei,ei)
+  }
+  save(D,y,test,true,m.mean,m.low,m.up,m.ei,n,file="data/5-plot.RData")
+}
+load("data/5-plot.RData")
+pdf("../figures/5.pdf",width=12,height=4)
+oldpar=par(mar=c(1,1,1,1),mfrow=c(1,3))
+for(k in 0:2){
+  pm=m.mean[,k+1];lo=m.low[,k+1];up=m.up[,k+1];ei=m.ei[,k+1]
+  plot(test,true,type="l",axes=FALSE,xlab="",ylab="",ylim=c(min(true)-.25,max(true)+.5),lwd=0.8,col="#222222")
+  polygon(c(test,rev(test)),c(lo,rev(up)),col=adjustcolor("#222222",0.12),border=NA)
+  lines(test,lo,col=adjustcolor("#222222",0.3),lwd=0.6)
+  lines(test,up,col=adjustcolor("#222222",0.3),lwd=0.6)
+  lines(test,pm,lty=2,col="#222222",lwd=0.8)
+  if(k==0){
+		points(cbind(D[1:n],y[1:n]),pch=16,cex=1.4,col="#222222")
+	}else{
+		points(cbind(D[1:(n+k)],y[1:(n+k)]),pch=16,cex=1.4,col="#222222")
+		text(cbind(D[(n+1):(n+k)],y[(n+1):(n+k)]),labels=(n+1):(n+k),col="#2b5b9c",cex=1.1)
+	}
+  lines(test,true,lty=3,col="#666666",lwd=0.7)
+  box(col="#666666",lwd=0.8)
+  par(new=TRUE)
+  plot(test,ei,type="l",col="#c43a31",axes=FALSE,ylim=c(0,3*max(ei)),xlab="",ylab="",lwd=0.8)
+  points(test[which.max(ei)],0,col="#c43a31",pch=8,cex=1.4,lwd=1.1)
+}
+par(oldpar)
+dev.off()
