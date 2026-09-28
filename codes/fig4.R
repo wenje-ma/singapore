@@ -1,17 +1,19 @@
 setwd("C:/Users/18904/Github/singapore/codes")
 if(!dir.exists("data"))dir.create("data")
 if(!dir.exists("../figures"))dir.create("../figures")
-if(!file.exists("data/4-plot.RData")){
-  n1=100;n2=10;p=2;set.seed(1);library(SFDesign)
-  D1=maxpro.optim(maxproLHD(n1,p)$design)$design
-  D2=maxpro.remove(D1,n.remove=n1-n2,delta=1/n1^2)
-  save(D1,D2,file="data/4-plot.RData")
-}
-load("data/4-plot.RData")
-pdf("../figures/4.pdf",width=4,height=4)
-oldpar=par(mar=c(1,1,1,1))
-plot(D1,pch=16,cex=0.7,col="#bbbbbb",axes=FALSE,xlim=c(0,1),ylim=c(0,1),asp=1)
-points(D2,pch=2,cex=1.4,col="#222222",lwd=1.1)
+e=new.env();load("data/ablation-summary.RData",envir=e);tab=e$tab
+pdf("../figures/4.pdf",width=9,height=4.2)
+oldpar=par(mfrow=c(1,2),mar=c(3.2,3.6,2.8,0.8),mgp=c(2.2,0.6,0))
+dims=c("d1","d2","d4")
+v=rbind("with screening (M1)"=as.numeric(tab[tab$config=="M1",dims]),"no screening (S2)"=as.numeric(tab[tab$config=="S2",dims]))
+barplot(v,beside=TRUE,names.arg=c("1-D","2-D","4-D"),col=c("#555555","#222222"),border=NA,ylab="median found minimum  f*  (lower is better)",cex.axis=0.8,cex.names=0.9)
+mtext("Screening hurts",side=3,line=0.6,cex=0.85,font=2)
+legend("topright",c("with screening (M1)","no screening (S2)"),fill=c("#555555","#222222"),border=NA,bty="n",cex=0.7)
+box(col="#666666",lwd=0.8)
+ord=c("M1","S2","S1","M0")
+v8=as.numeric(tab[tab$config %in% ord,"d8"]);names(v8)=tab$config[tab$config %in% ord];v8=v8[ord]
+barplot(v8,col=c("#555555","#222222","#888888","#bbbbbb"),border=NA,names.arg=c("M1","S2","S1","M0"),ylab="found minimum  f*  at 8-D",cex.axis=0.8,cex.names=0.9,ylim=c(0,22))
+mtext("8-D: all fail (curse of dimensionality)",side=3,line=0.6,cex=0.85,font=2)
 box(col="#666666",lwd=0.8)
 par(oldpar)
 dev.off()

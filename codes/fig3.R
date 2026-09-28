@@ -1,27 +1,16 @@
 setwd("C:/Users/18904/Github/singapore/codes")
 if(!dir.exists("data"))dir.create("data")
 if(!dir.exists("../figures"))dir.create("../figures")
-if(!file.exists("data/3-plot.RData")){
-  library(MOFAT);p=2;l=4;s=1
-  set.seed(s);D1=mofat(p,l,method="uniform")
-  A1=D1[1:l,];C11=D1[(l+1):(2*l),];C12=D1[(2*l+1):(3*l),]
-  set.seed(s);D2=mofat(p,l,method="projection")
-  A2=D2[1:l,];C21=D2[(l+1):(2*l),];C22=D2[(2*l+1):(3*l),]
-  save(A1,C11,C12,A2,C21,C22,l,file="data/3-plot.RData")
-}
-load("data/3-plot.RData")
-pdf("../figures/3.pdf",width=8,height=4)
-oldpar<-par(mar=c(1,1,1,1),mfrow=c(1,2))
-for(side in 1:2){
-  if(side==1){A=A1;C1=C11;C2=C12}else{A=A2;C1=C21;C2=C22}
-  plot(A,pch=16,cex=1.4,col="#222222",axes=FALSE,xlab="",ylab="",xlim=c(0,1),ylim=c(0,1),asp=1)
-  points(C1,pch=2,cex=1.4,col="#222222",lwd=1.1)
-  points(C2,pch=3,cex=1.4,col="#222222",lwd=1.1)
-  for(i in 1:l){
-    arrows(A[i,1],A[i,2],C1[i,1],C1[i,2],lty=i,col="#666666",lwd=0.7,length=0.07)
-    arrows(A[i,1],A[i,2],C2[i,1],C2[i,2],lty=i,col="#666666",lwd=0.7,length=0.07)
-  }
-  box(col="#666666",lwd=0.8)
-}
+e=new.env();load("data/ablation-summary.RData",envir=e);tab=e$tab
+dims=c("d1","d2","d4")
+v=rbind("only precise (M0)"=as.numeric(tab[tab$config=="M0",dims]),"precise + cheap (S2)"=as.numeric(tab[tab$config=="S2",dims]))
+
+pdf("../figures/3.pdf",width=5.5,height=4)
+oldpar=par(mar=c(3.2,3.6,0.8,0.6),mgp=c(2.2,0.6,0))
+bp=barplot(v,beside=TRUE,names.arg=c("1-D","2-D","4-D"),col=c("#999999","#222222"),border=NA,ylab="median found minimum  f*  (lower is better)",cex.axis=0.8,cex.names=0.9,ylim=c(-2,1.2))
+segments(bp[1,2]-0.1,0.3979,bp[2,2]+0.1,0.3979,col="#666666",lwd=0.6,lty=2)
+text(bp[2,2]+0.5,0.3979+0.05,"Branin optimum 0.398",col="#666666",cex=0.7,adj=c(0,0))
+legend("topleft",c("only precise (M0)","precise + cheap (S2)"),fill=c("#999999","#222222"),border=NA,bty="n",cex=0.8)
+box(col="#666666",lwd=0.8)
 par(oldpar)
 dev.off()

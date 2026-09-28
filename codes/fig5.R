@@ -1,55 +1,20 @@
 setwd("C:/Users/18904/Github/singapore/codes")
 if(!dir.exists("data"))dir.create("data")
 if(!dir.exists("../figures"))dir.create("../figures")
-if(!file.exists("data/5-plot.RData")){
-  library(rkriging);set.seed(1)
-  f=function(x)sin(10*pi*x)/(1+64*(x-.25)^2)+x^2
-  EI=function(x,hmin,obj){
-    pred=Predict.Kriging(obj,cbind(x))
-    s=max(pred$sd,1e-10);u=(hmin-pred$mean)/s
-    s*(u*pnorm(u)+dnorm(u))
-  }
-  test=seq(0,1,length=301);true=f(test);n=8
-  D=((1:n)-.5)/n;y=f(D)
-  a=Fit.Kriging(D,y,kernel.parameters=list(type="Gaussian"))
-  pred=Predict.Kriging(a,test)
-  low=pred$mean-2*pred$sd;up=pred$mean+2*pred$sd
-  ei=apply(cbind(test),1,EI,hmin=min(y),obj=a)
-  xnew=test[which.max(ei)]
-  m.mean=pred$mean;m.low=low;m.up=up;m.ei=ei
-  for(i in 1:2){
-    D=c(D,xnew);y=c(y,f(xnew))
-    a=Fit.Kriging(D,y,kernel.parameters=list(type="Gaussian"))
-    pred=Predict.Kriging(a,test)
-    low=pred$mean-2*pred$sd;up=pred$mean+2*pred$sd
-    ei=apply(cbind(test),1,EI,hmin=min(y),obj=a)
-    xnew=test[which.max(ei)]
-    m.mean=cbind(m.mean,pred$mean);m.low=cbind(m.low,low)
-    m.up=cbind(m.up,up);m.ei=cbind(m.ei,ei)
-  }
-  save(D,y,test,true,m.mean,m.low,m.up,m.ei,n,file="data/5-plot.RData")
-}
-load("data/5-plot.RData")
-pdf("../figures/5.pdf",width=12,height=4)
-oldpar=par(mar=c(1,1,1,1),mfrow=c(1,3))
-for(k in 0:2){
-  pm=m.mean[,k+1];lo=m.low[,k+1];up=m.up[,k+1];ei=m.ei[,k+1]
-  plot(test,true,type="l",axes=FALSE,xlab="",ylab="",ylim=c(min(true)-.25,max(true)+.5),lwd=0.8,col="#222222")
-  polygon(c(test,rev(test)),c(lo,rev(up)),col=adjustcolor("#222222",0.12),border=NA)
-  lines(test,lo,col=adjustcolor("#222222",0.3),lwd=0.6)
-  lines(test,up,col=adjustcolor("#222222",0.3),lwd=0.6)
-  lines(test,pm,lty=2,col="#222222",lwd=0.8)
-  if(k==0){
-		points(cbind(D[1:n],y[1:n]),pch=16,cex=1.4,col="#222222")
-	}else{
-		points(cbind(D[1:(n+k)],y[1:(n+k)]),pch=16,cex=1.4,col="#222222")
-		text(cbind(D[(n+1):(n+k)],y[(n+1):(n+k)]),labels=(n+1):(n+k),col="#2b5b9c",cex=1.1)
-	}
-  lines(test,true,lty=3,col="#666666",lwd=0.7)
+e=new.env();load("data/ablation-summary.RData",envir=e);tab=e$tab
+cols=c(M1="#555555",S2="#222222",S1="#888888",M0="#bbbbbb")
+lbl=c(d1="1-D",d2="2-D",d4="4-D",d8="8-D")
+pdf("../figures/5.pdf",width=8,height=7)
+layout(matrix(c(1,1,2,3,4,5),nrow=3,byrow=TRUE),heights=c(0.7,1,1))
+oldpar=par(mar=c(3.2,3.4,2.4,0.6),mgp=c(2.2,0.6,0))
+plot.new()
+legend("center",legend=c("M1  full pipeline","S2  no screening","S1  no fusion","M0  blank"),fill=cols[c("M1","S2","S1","M0")],border=NA,horiz=TRUE,bty="n",cex=0.9)
+for(d in c("d1","d2","d4","d8")){
+  v=as.numeric(tab[tab$config %in% c("M1","S2","S1","M0"),d])
+  names(v)=tab$config[tab$config %in% c("M1","S2","S1","M0")];v=v[c("M1","S2","S1","M0")]
+  barplot(v,col=cols[c("M1","S2","S1","M0")],border=NA,names.arg=c("M1","S2","S1","M0"),ylab="f*  (lower is better)",cex.axis=0.8,cex.names=0.85)
+  mtext(lbl[d],side=3,line=0.2,cex=0.85,font=2)
   box(col="#666666",lwd=0.8)
-  par(new=TRUE)
-  plot(test,ei,type="l",col="#c43a31",axes=FALSE,ylim=c(0,3*max(ei)),xlab="",ylab="",lwd=0.8)
-  points(test[which.max(ei)],0,col="#c43a31",pch=8,cex=1.4,lwd=1.1)
 }
 par(oldpar)
 dev.off()
