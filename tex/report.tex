@@ -67,7 +67,7 @@ There is a bias structure between the two fidelities, whose form is unknown. The
 
 \end{frame}
 
-\note{Let us first look at the formal problem statement. The design parameters bold x live in the p-dimensional unit interval, and the simulator is a black box y equals h bold x. Two evaluation channels are available: the low-fidelity h L bold x is cheap, cost c L, but has a systematic bias; the high-fidelity h H bold x is expensive, cost c H much greater than c L, and is accurate. The bias structure between the two fidelities is unknown. The total budget is 15 high-fidelity equivalents. Define hat bold x as the algorithm's best estimate; hat h equals h H bold x, the high-fidelity value measured there. Our goal is to estimate as accurately as possible the bold x minimizing h H bold x.}
+\note{Let us first look at the formal problem statement. The design parameters x live in the p-dimensional unit interval, and the simulator is a black box y equals h x. Two evaluation channels are available: the low-fidelity h L x is cheap, cost c L, but has a systematic bias; the high-fidelity h H x is expensive, cost c H much greater than c L, and is accurate. The bias structure between the two fidelities is unknown. The total budget is 15 high-fidelity equivalents. Define hat x as the algorithm's best estimate; hat h equals h H x, the high-fidelity value measured there. Our goal is to estimate as accurately as possible the x minimizing h H x.}
 
 \section{Theoretical Foundations}
 
@@ -83,7 +83,7 @@ Maximin Latin hypercube sampling design (Morris and Mitchell, 1995)\cite{MorrisM
 
 \end{frame}
 
-\note{Let us lay the theoretical foundation. We estimate bold x through Bayes' formula, with a prior and a posterior. At the prior stage we know nothing about the function, so the initial points must cover the space as uniformly as possible. To ensure that in every one-dimensional projection all coordinates are distinct, Morris and Mitchell proposed the maximin Latin hypercube sampling design in 1995; as Figure 1 shows, it covers the space uniformly.}
+\note{Let us lay the theoretical foundation. We estimate x through Bayes' formula, with a prior and a posterior. At the prior stage we know nothing about the function, so the initial points must cover the space as uniformly as possible. To ensure that in every one-dimensional projection all coordinates are distinct, Morris and Mitchell proposed the maximin Latin hypercube sampling design in 1995; as Figure 1 shows, it covers the space uniformly.}
 
 \begin{frame}{Maximum Projection Design}
 
@@ -96,7 +96,7 @@ Maximum projection design (Joseph et al., 2015)\cite{Joseph2015}: let $D=\left\{
 
 \end{frame}
 
-\note{However, it projects poorly in high dimensions. Joseph et al. therefore proposed the maximum projection design in 2015: for a design bold x 1 to bold x n on the p-dimensional unit interval, the criterion is (1). Since the denominator cannot be zero, distinct coordinates are guaranteed automatically, satisfying the maximin constraint.}
+\note{However, it projects poorly in high dimensions. Joseph et al. therefore proposed the maximum projection design in 2015: for a design x 1 to x n on the p-dimensional unit interval, the criterion is (1). Since the denominator cannot be zero, distinct coordinates are guaranteed automatically, satisfying the maximin constraint.}
 
 \begin{frame}{Maximum Projection Design}
 
@@ -166,7 +166,7 @@ Applying (4) after the mapping in (5) gives the \alert{maximum one-factor-at-a-t
 
 \end{frame}
 
-\note{Inspired by maximum projection, Joseph in 2026 proposed letting bold A and bold B alternately apply the mapping in (5) to improve the projection properties; the two branches in (5) are interchangeable. The result is the maximum one-factor-at-a-time design with projection.}
+\note{Inspired by maximum projection, Joseph in 2026 proposed letting A and B alternately apply the mapping in (5) to improve the projection properties; the two branches in (5) are interchangeable. The result is the maximum one-factor-at-a-time design with projection.}
 
 \begin{frame}{Maximum OFAT Design with Projection}
 
@@ -193,7 +193,7 @@ where $k=1,\dots,n-1$.
 
 \end{frame}
 
-\note{We do not need to spend the whole high-fidelity budget at once. We can build a small initial design, collect data, and then decide where the next experiments go. This flexible strategy is the sequential design, also called active learning in machine learning; unlike the maximin Latin hypercube design, the maximum projection design supports it naturally. Define calligraphic X as the design space in the p-dimensional space of blackboard bold R. Joseph proposed in 2016 choosing x 1 as the initial point, then adding x 2 to x n one by one via (6), with k from 1 to n minus 1. In fact, (6) is just the maximum projection criterion (1) rewritten iteratively. We will use it for sequential point selection.}
+\note{We do not need to spend the whole high-fidelity budget at once. We can build a small initial design, collect data, and then decide where the next experiments go. This flexible strategy is the sequential design, also called active learning in machine learning; unlike the maximin Latin hypercube design, the maximum projection design supports it naturally. Define X as the design space in the p-dimensional space of R. Joseph proposed in 2016 choosing x 1 as the initial point, then adding x 2 to x n one by one via (6), with k from 1 to n minus 1. In fact, (6) is just the maximum projection criterion (1) rewritten iteratively. We will use it for sequential point selection.}
 
 \begin{frame}{Nested Design}
 
@@ -287,7 +287,7 @@ This procedure is repeated until convergence. Since the Gaussian process adopts 
 
 \end{frame}
 
-\note{Now to the core optimization problem: minimize the expensive black-box function h bold x over the design space, taken as the p-dimensional unit interval, giving (11) — a nonlinear problem with box constraints. We need a global method using as few evaluations as possible. We select a small design bold x 1 to bold x n, evaluate h bold x i to get y i, and approximate the function by a cheap Gaussian process surrogate hat h n bold x, which approaches the high-fidelity surface sequentially. Minimizing the surrogate yields the next point via (12); iterating until convergence gives Bayesian optimization. The standard choice is expected improvement, proposed by Jones et al. in 1998. }
+\note{Now to the core optimization problem: minimize the expensive black-box function h x over the design space, taken as the p-dimensional unit interval, giving (11) — a nonlinear problem with box constraints. We need a global method using as few evaluations as possible. We select a small design x 1 to x n, evaluate h x i to get y i, and approximate the function by a cheap Gaussian process surrogate hat h n x, which approaches the high-fidelity surface sequentially. Minimizing the surrogate yields the next point via (12); iterating until convergence gives Bayesian optimization. The standard choice is expected improvement, proposed by Jones et al. in 1998. }
 
 \begin{frame}{Expected Improvement Method}
 
@@ -302,7 +302,7 @@ where $\mu$ is the constant mean, $\tau^2$ the variance, and $R\left(\cdot\right
 
 \end{frame}
 
-\note{Given the design D n and observations bold y n, we place the Gaussian process prior (13).}
+\note{Given the design D n and observations y n, we place the Gaussian process prior (13).}
 
 \begin{frame}{Expected Improvement Method}
 
@@ -328,7 +328,7 @@ Thus, if the chosen $x$ satisfies $h\left(\boldsymbol{x}\right)<h_{\mathrm{min}}
 
 \end{frame}
 
-\note{By Lemma 2.2 of Joseph in 2026, the posterior is (14). Let h n minimum be the minimum of bold y n and define the improvement I in (15): improvement occurs when h bold x falls below h n minimum.}
+\note{By Lemma 2.2 of Joseph in 2026, the posterior is (14). Let h n minimum be the minimum of y n and define the improvement I in (15): improvement occurs when h x falls below h n minimum.}
 
 \begin{frame}{Expected Improvement Method}
 
@@ -365,7 +365,7 @@ where $\mathrm{EI}=s_n\left(\boldsymbol{x}\right)\left[u_n\left\{\boldsymbol{x}\
 
 \end{frame}
 
-\note{And differentiating yields (18): expected improvement decreases with hat h n bold x and increases with s n bold x, balancing optimization against surrogate accuracy.}
+\note{And differentiating yields (18): expected improvement decreases with hat h n x and increases with s n x, balancing optimization against surrogate accuracy.}
 
 \begin{frame}{Expected Improvement Method}
 
