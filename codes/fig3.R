@@ -5,11 +5,9 @@ e=new.env();load("data/ablation-summary.RData",envir=e);tab=e$tab
 dims=c("d1","d2","d4")
 v=rbind("only precise (M0)"=as.numeric(tab[tab$config=="M0",dims]),"precise + cheap (S2)"=as.numeric(tab[tab$config=="S2",dims]))
 
-pdf("../figures/3.pdf",width=5.5,height=4)
+pdf("../figures/3.pdf",width=4,height=4)
 oldpar=par(mar=c(3.2,3.6,0.8,0.6),mgp=c(2.2,0.6,0))
-bp=barplot(v,beside=TRUE,names.arg=c("1-D","2-D","4-D"),col=c("#999999","#222222"),border=NA,ylab="median found minimum  f*  (lower is better)",cex.axis=0.8,cex.names=0.9,ylim=c(-2,1.2))
-segments(bp[1,2]-0.1,0.3979,bp[2,2]+0.1,0.3979,col="#666666",lwd=0.6,lty=2)
-text(bp[2,2]+0.5,0.3979+0.05,"Branin optimum 0.398",col="#666666",cex=0.7,adj=c(0,0))
+bp=barplot(v,beside=TRUE,names.arg=c("1-D","2-D","4-D"),col=c("#999999","#222222"),border=NA,ylab="median found minimum  f*  (lower is better)",cex.axis=0.8,cex.names=0.9,ylim=c(-2,2))
 legend("topleft",c("only precise (M0)","precise + cheap (S2)"),fill=c("#999999","#222222"),border=NA,bty="n",cex=0.8)
 box(col="#666666",lwd=0.8)
 par(oldpar)

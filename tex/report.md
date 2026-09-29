@@ -8,13 +8,18 @@ Author: Wenje Ma
 
 Institution: Beijing Institute of Technology
 
-**notes**
+*notes*
 
 Hello everyone, I am Wenje Ma. Today I want to share my recent work. It is about one question: when our budget for experiments is small, how do we make each experiment more valuable?
 
 ## Begin: A Story
 
-**notes**
+- Tune many interacting parameters — more than ten
+- Only about fifteen expensive experiments allowed
+- Real in engines, materials, ...
+- Question: spend a tiny budget in the smartest way?
+
+*notes*
 
 Let me start with a story. Imagine you work for a company, and your job is to tune some parameters. You have an experiment, but it is very expensive — every run costs a lot, and you can only afford fifteen runs in total.
 
@@ -24,7 +29,11 @@ What would you do? That is exactly the problem today. And it is not just a story
 
 ## Background 1: Black-Box and Budget
 
-**notes**
+- Black box: you see input and output, never the inside
+- Budget: only fifteen precise runs, but a huge space
+- Task: find the best point of a high-dimensional black box
+
+*notes*
 
 Why is this hard? Two reasons.
 
@@ -39,7 +48,11 @@ h_k\left(\boldsymbol{x}\right)=h_{k-1}\left(\boldsymbol{x}\right)+\delta_k\left(
 \tag{1}
 $$
 
-**notes**
+- Cheap channel: run many times, but biased
+- Expensive channel: only ~15 runs, accurate
+- Idea: combine them — high = low + bias
+
+*notes*
 
 The good news: our black box has two channels.
 
@@ -51,9 +64,16 @@ The key is how to combine them. My idea is simple: high fidelity equals low fide
 
 ## Figure: V. Roshan Joseph
 
-![1.jpg](../figures/1.jpg){width=%}
+> Fig 1: Roshan Vengazhiyil Joseph is A. Russell Chandler III Chair and Professor in the Stewart School of Industrial & Systems Engineering at Georgia Tech.
 
-**notes**
+![1.jpg](../figures/1.jpg){width=50%}
+
+- One source: V. R. Joseph, Georgia Tech
+- Maxpro design — where to start
+- Sequential design — add points one by one
+- KOH fusion — join cheap and expensive data
+
+*notes*
 
 Almost the whole skeleton comes from one person — V. Roshan Joseph, a big name in experimental design. Let me show his picture.
 
@@ -71,9 +91,15 @@ $$
 \min_D\sum_{i=1}^{n}\prod_{j\neq i}\frac{1}{\sum_{k=1}^p\left(x_{ik}-x_{jk}\right)^2}\tag{2}
 $$
 
+> Fig 2: The maxpro design.
+
 ![2.svg](../figures/2.svg){width=50%}
 
-**notes**
+- Start evenly: spread in every projection (Fig. 2)
+- Surrogate: Gaussian process = a normal distribution over functions
+- It predicts a value, AND an uncertainty, at every point
+
+*notes*
 
 At the start we know nothing about the function, so the first points should cover the space evenly — not piled in one corner, not overlapping.
 
@@ -83,7 +109,12 @@ Next, we need a stand-in model to guess the black box. That stand-in is a Gaussi
 
 ## The Whole Process
 
-**notes**
+1. Spread out the starting points
+2. Feed in many cheap runs → a rough map
+3. Send one expensive run to the predicted valley
+4. Repeat — the map gets sharper every round
+
+*notes*
 
 Now the whole pipeline, in four steps.
 
@@ -101,7 +132,13 @@ $$
 \widehat{\boldsymbol{x}}\approx\argmin_{\boldsymbol{x}\in\left[0,1\right]^{p}}h_\mathrm{H}\left(\boldsymbol{x}\right)\tag{3}
 $$
 
-**notes**
+- Goal: minimize the expensive function, with only 15 precise runs
+- Three small questions:
+  - Does combining the two channels help?
+  - Does screening the parameters help?
+  - Does it still work in high dimensions?
+
+*notes*
 
 Here is our question. Our task is in equation (3): find the point that makes the expensive function as small as possible, using only fifteen precise tests.
 
@@ -109,49 +146,82 @@ I will answer three smaller questions. Is combination useful? Is screening usefu
 
 ## Our Answer 1: Combination Is the Key
 
-![3.svg](../figures/3.svg){width=100%}
+> Fig 3: Combination Is the Key.
 
-**notes**
+![3.svg](../figures/3.svg){width=50%}
 
-As the figure 3 shows that:
+- Metric: median of the best found, over 20 repeats
+- Cheap + precise beats precise alone (Fig. 3)
+- 1-D: precise alone stuck at 0; with fusion → global optimum
+- 2-D: lands right next to the known answer
 
-First conclusion: combination is the key. With the same budget, a few precise tests plus many cheap tests beats only precise tests.
+*notes*
 
-Low dimensions are very clear. In one dimension, only precise tests cannot find the best point — it stays at zero. Add the cheap tests and fusion, and it jumps to the global optimum. In two dimensions, it gets very close to the standard answer.
+Our evaluation metric is to compare the median of the minimum values obtained from 20 experimental optimizations. As the figure 3 shows that:
 
-We also did a small calibration first, tuning how to split the budget. In low dimension, two precise tests are enough; in high dimension, we almost need all of it. That already shows: higher dimension, harder problem.
+Combination is the key. With the same budget, a few precise tests plus many cheap tests beats only precise tests.
 
-## Our Answer 2, 3: Screening Is Useless and High Dimensions Fail
+Low dimensions are very clear. In one dimension, only precise tests cannot find the best point — it stays at zero. Add the cheap tests and fusion, and it jumps to the global optimum. In two and four dimensions, it gets very close to the standard answer.
 
-![4.svg](../figures/4.svg){width=100%}
+## Our Answer 2: Screening Is Useless
 
-**notes**
+> Fig 4: Screening Is Useless.
+
+![4.svg](../figures/4.svg){width=50%}
+
+- Screening ranks parameters by cheap runs
+- But cheap runs are biased → the ranking is unreliable
+- Result: removing screening actually helps (Fig. 4)
+
+*notes*
 
 As the figure 4 shows that:
 
-We also did an ablation — remove one component at a time, to see which part really helps.
+Screening is useless, it even hurts. Screening ranks parameters using cheap tests, but the cheap tests have bias, so the ranking is unreliable. Without it, results are better.
 
-Two findings. First, screening is useless, it even hurts. Screening ranks parameters using cheap tests, but the cheap tests have bias, so the ranking is unreliable. Without it, results are better.
+## Our Answer 3: High Dimensions Fail
 
-Second, in eight dimensions, fusion also fails — the curse of dimensionality. Five precise points cannot draw the shape of an eight-dimensional land.
+> Fig 5: High Dimensions Fail.
+
+![5.svg](../figures/5.svg){width=50%}
+
+- In 8-D, fusion collapses too
+- Too few precise points to sketch an 8-D landscape
+- Fusion is decisive — but it has a ceiling
+
+*notes*
+
+As the figure 5 shows that:
+
+In eight dimensions, fusion also fails — the curse of dimensionality. Few precise points cannot draw the shape of an eight-dimensional land.
 
 So: fusion is the decisive part, but it has a ceiling.
 
 ## Global Picture
 
-![5.svg](../figures/5.svg){width=100%}
+> Fig 6: All results.
 
-**notes**
+![6.svg](../figures/6.svg){width=100%}
 
-As the figure 5 shows that:
+- Low dims: full pipeline wins; drop fusion → breaks
+- High dims: nothing works
+- One line: make every precise test count; limit = dimensionality
 
-Put all results in one figure and the picture is clear. The complete pipeline is best in low dimensions. Remove the combination, and it breaks even in low dimensions. In high dimensions, nothing works.
+*notes*
+
+Put all results in one figure and the picture is clear. As the figure 6 shows that:
+
+The complete pipeline is best in low dimensions. Remove the combination, and it breaks even in low dimensions. In high dimensions, nothing works.
 
 So it all comes down to one sentence: multi-fidelity is not about spending more money on precise tests — it is about making each precise test more valuable. And its boundary is set by the curse of dimensionality.
 
 ## Future Directions
 
-**notes**
+1. When is screening trustworthy? (find the bias conditions)
+2. Tame high dimensions? (add structure, or reduce dimension first)
+3. Real-world tool: give it a budget — get the best plan
+
+*notes*
 
 Three directions next.
 
@@ -163,8 +233,18 @@ Third, push it into the real world — engines, materials, biology, where experi
 
 ## Summary
 
-**notes**
+- Not "more precise runs" — but "more value per run"
+- Limit: the curse of high dimensions
+
+*notes*
 
 Let me finish with one sentence. Multi-fidelity does not ask you to spend more money on precise tests. It makes each precise test more valuable. Its limit is controlled by high dimensions.
 
+## Thanks
+
+- Thank you — questions welcome
+
+*notes*
+
 That is all. Thank you for listening!
+
