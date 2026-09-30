@@ -41,9 +41,10 @@
 \note{Hello everyone, I am Wenje Ma. Today I want to share my recent work. It is about one question: when our budget for experiments is small, how do we make each experiment more valuable?}
 
 \begin{frame}{Begin: A Story}
+  Your job is to tune some parameters, but:
   \begin{itemize}
-    \item Tune many interacting parameters --- more than ten
     \item Only about fifteen expensive experiments allowed
+    \item Tune many interacting parameters --- more than ten
     \item Real in engines, materials, \ldots
     \item Question: spend a tiny budget in the smartest way?
   \end{itemize}
@@ -52,6 +53,7 @@
 \note{Let me start with a story. Imagine you work for a company, and your job is to tune some parameters. You have an experiment, but it is very expensive --- every run costs a lot, and you can only afford fifteen runs in total. The hard part: there are more than ten parameters, and they affect each other. Change one, and the others may change too. So you cannot try them one by one. You need the best combination of all of them, but you have only fifteen chances. What would you do? That is exactly the problem today. And it is not just a story --- engines, materials, and many real systems are exactly like this. Testing is expensive, and you get few chances. So the real question is: how do we spend a small budget in the smartest way?}
 
 \begin{frame}{Background 1: Black-Box and Budget}
+  Why is it HARD?
   \begin{itemize}
     \item \textbf{Black box}: you see input and output, never the inside
     \item \textbf{Budget}: only fifteen precise runs, but a huge space
@@ -62,6 +64,7 @@
 \note{Why is this hard? Two reasons. First, the black box. A black box means you only see input and output, never what is inside. It is like a locked machine --- you put in a coin and see the result, but you cannot open it. Our function is exactly that. We do not know its shape; we can only test it. Second, the budget. We can only run the precise experiment fifteen times, but the parameter space is huge. With so many parameters and so few chances, guessing is hopeless. So the starting point is: use fifteen chances to find the best point of a high-dimensional black box.}
 
 \begin{frame}{Background 2: Two Channels}
+  Good news: Two Channels:
   \begin{equation*}
     h_k(\boldsymbol{x}) = h_{k-1}(\boldsymbol{x}) + \delta_k(\boldsymbol{x})
   \end{equation*}
@@ -92,16 +95,15 @@
 
 \note{Almost the whole skeleton comes from one person --- V. Roshan Joseph, a big name in experimental design. Let me show his picture. He gave us three pieces, and they are exactly the three parts of my pipeline. First, maxpro design --- how to choose the best starting points, so we waste none. Second, sequential design --- how to add points one by one, flexibly. Third, KOH fusion --- how to combine the cheap evaluations with the expensive ones.}
 
-\begin{frame}{Main Tools: Maxpro Design and Gaussian Process}
+\begin{frame}{Main Tools 1: Maxpro Design}
   \begin{columns}
     \column{0.55\textwidth}
+      The criterion of maxpro design:
       \begin{equation*}
         \min_D \sum_{i=1}^{n}\prod_{j\neq i}\frac{1}{\sum_{k=1}^p (x_{ik}-x_{jk})^2}
       \end{equation*}
       \begin{itemize}
         \item Start evenly: spread in every projection
-        \item Surrogate: Gaussian process = a normal distribution over functions
-        \item It predicts a value, AND an uncertainty, at every point
       \end{itemize}
     \column{0.45\textwidth}
       \begin{figure}
@@ -110,9 +112,22 @@
   \end{columns}
 \end{frame}
 
-\note{At the start we know nothing about the function, so the first points should cover the space evenly --- not piled in one corner, not overlapping. Maxpro design chooses points like that. It keeps them spread out, both in the whole space and in every low-dimensional projection. The criterion is the equation, and the effect is shown on the right. Next, we need a stand-in model to guess the black box. That stand-in is a Gaussian process. Think of it as a normal distribution on an infinite-dimensional space. A normal distribution gives one number; a Gaussian process gives a whole function, and also tells you how unsure it is at every point. That matters, because we need to know where to test next.}
+\note{At the start we know nothing about the function, so the first points should cover the space evenly --- not piled in one corner, not overlapping. Maxpro design chooses points like that. It keeps them spread out, both in the whole space and in every low-dimensional projection. The criterion is the equation, and the effect is shown on the right.}
+
+\begin{frame}{Main Tools 2: Gaussian Process}
+  \begin{definition}{Gaussian Process}
+      A random function $Y(\boldsymbol x)$ is a \textbf{Gaussian process} if for any choice of $\boldsymbol x_1,\dots,\boldsymbol x_n$ and any $n\ge1$, $\boldsymbol Y=(Y(\boldsymbol x_1),\dots,Y(\boldsymbol x_n))'$ has a multivariate normal distribution.
+  \end{definition}
+  \begin{itemize}
+    \item Surrogate: Gaussian process = a normal distribution over functions
+    \item It predicts a value, AND an uncertainty, at every point
+  \end{itemize}
+\end{frame}
+
+\note{Next, we need a stand-in model to guess the black box. That stand-in is a Gaussian process. Think of it as a normal distribution on an infinite-dimensional space. A normal distribution gives one number; a Gaussian process gives a whole function, and also tells you how unsure it is at every point. That matters, because we need to know where to test next.}
 
 \begin{frame}{The Whole Process}
+  The whole pipeline:
   \begin{enumerate}
     \item Spread out the starting points
     \item Feed in many cheap runs $\rightarrow$ a rough map
@@ -124,6 +139,7 @@
 \note{Now the whole pipeline, in four steps. One, choose the starting points, spread out evenly. Two, feed the model with cheap points. Many cheap tests go into the Gaussian process, so it draws a rough map of the land. Three, the precise test. The model says where the valley bottom probably is. We go there and run one expensive, accurate test. Four, repeat. Each round the map improves, and we get closer to the best point.}
 
 \begin{frame}{Our Question}
+  Our Question:
   \begin{equation*}
     \widehat{\boldsymbol{x}} \approx \argmin_{\boldsymbol{x}\in[0,1]^p} h_\mathrm{H}(\boldsymbol{x})
   \end{equation*}
@@ -210,6 +226,7 @@
 \note{Put all results in one figure and the picture is clear. The complete pipeline is best in low dimensions. Remove the combination, and it breaks even in low dims. In high dimensions, nothing works. So it all comes down to one sentence: multi-fidelity is not about spending more money on precise tests --- it is about making each precise test more valuable. And its boundary is set by the curse of dimensionality.}
 
 \begin{frame}{Future Directions}
+  My Future Directions:
   \begin{enumerate}
     \item When is screening trustworthy? (find the bias conditions)
     \item Tame high dimensions? (add structure, or reduce dimension first)
@@ -229,8 +246,7 @@
 \note{Let me finish with one sentence. Multi-fidelity does not ask you to spend more money on precise tests. It makes each precise test more valuable. Its limit is controlled by high dimensions.}
 
 \begin{frame}[standout]
-  Thank you!\\[0.5em]
-  Questions welcome
+  Thank you!
 \end{frame}
 
 \note{That is all. Thank you for listening!}
