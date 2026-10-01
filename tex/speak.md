@@ -48,7 +48,7 @@ The second piece is the model that **guesses the shape** of the black box. That 
 
 ---
 
-Now the whole pipeline, in **four steps**. One, choose the **starting points**, spread out evenly. Two, feed the model with **many cheap low-fidelity points**; they go into the Gaussian process, and it draws a **rough map**. Three, run **one expensive high-fidelity test** where the model says the **valley bottom** probably is. Four, **repeat** — every round the map **gets sharper**, and we get closer to the best point. It's exactly how a human engineer would work: **map, guess, test, refine**.
+Now **the whole pipeline**, in **four steps**. One, choose the **starting points**, spread out evenly. Two, feed the model with **many cheap low-fidelity points**; they go into the Gaussian process, and it draws a **rough map**. Three, run **one expensive high-fidelity test** where the model says the **destination** probably is. Four, **repeat** — every round the map **gets sharper**, and we get closer to the best point. It's exactly how a human engineer would work: **map, guess, test, refine**.
 
 ---
 
@@ -58,11 +58,11 @@ $$
 \widehat{\boldsymbol{x}} \approx \argmin_{\boldsymbol{x}\in[0,1]^p} h_\mathrm{H}(\boldsymbol{x})
 $$
 
-Find the point that makes the **high-fidelity function as small as possible**, using only **fifteen high-fidelity tests**. I broke this into **three smaller questions**. First, does **combining the two fidelities** help? Second, does **screening** help — using cheap tests to decide **which parameters matter**, and dropping the rest? And third, does the whole thing still work **in high dimensions**?
+Find the point that makes the high-fidelity function **as small as possible**, using only **fifteen high-fidelity tests**. I broke this into **three smaller questions**. First, does **combining the two fidelities** help? Second, does **screening** help — using cheap tests to decide **which parameters matter**, and **dropping the rest**? And third, does the whole thing still work **in high dimensions**?
 
 ---
 
-Before I show results, let me say how I **measure success**, because it matters. I ran the whole pipeline **twenty times** from scratch, because the starting points are **random**. Each run gives me the **best value it found**. Then I take the **median** of those twenty best values — the middle one — as the number to report. Twenty runs is our way of being **honest**: one lucky run proves nothing; we want what happens **on average**. A lower number means a **better point**. So in every figure, **lower is better**.
+Before I show results, let me say how I **measure success**. I ran the whole pipeline **twenty times** from scratch, because the starting points are **random**. Each run gives me the **best value it found**. Then I take the **median** of those twenty best values. Twenty runs prove **honestly**: one lucky run proves nothing; we want it happens **on average**. A lower number means a **better point**. So in every figure, **lower is better**.
 
 Enough setup. Let me show you **what actually happened** when I ran it.
 
