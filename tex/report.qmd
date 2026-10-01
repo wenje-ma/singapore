@@ -1,0 +1,180 @@
+---
+title: "Making Every Experiment Count"
+subtitle: "A cheap guide for expensive tests"
+author: "Wenje Ma"
+institute: "Beijing Institute of Technology"
+date: "2026-10"
+format:
+  beamer:
+    theme: metropolis
+    pdf-engine: xelatex
+    include-in-header:
+      text: |
+        \metroset{block=fill}
+        \setbeamercolor{note title}{bg=white}
+        \setbeamercolor{note page}{bg=white}
+        \setbeamercolor{background canvas}{bg=black!2}
+        \DeclareMathOperator*{\argmin}{arg\,min}
+        \DeclareMathOperator*{\argmax}{arg\,max}
+        \setmathfont[version=bold]{XITSMath-Bold.otf}
+mainfont: "Latin Modern Roman"
+sansfont: "Latin Modern Roman"
+monofont: "Consolas"
+CJKmainfont: "SimHei"
+CJKsansfont: "SimHei"
+CJKmonofont: "SimHei"
+mathfont: "Latin Modern Math"
+---
+
+## The Problem: Few Expensive Tests
+
+Your job: tune parameters, but you face:
+
+- Only about **fifteen expensive** experiments allowed
+- **Many interacting** parameters — more than ten
+- Change one, the others move — can't tune one at a time
+- So: spend a tiny budget in the **smartest way**?
+
+## Why It Is Hard: Black Box \& Budget
+
+- **Black box**: you see input and output, never the inside
+- **Budget**: only fifteen precise runs, but a huge space
+- Task: find the **best point** of a high-dimensional black box
+
+## The Key Idea: Two Channels
+
+Good news — our black box has two channels:
+
+$$
+h_k(\boldsymbol{x}) = h_{k-1}(\boldsymbol{x}) + \delta_k(\boldsymbol{x})
+$$
+
+- **Cheap** channel: run many times, but **biased**
+- **Expensive** channel: only 15 runs, accurate
+- Idea: combine — accurate = cheap + a correction
+
+## The Skeleton Comes from One Person
+
+::: {.columns}
+::: {.column width="50%"}
+![V. R. Joseph](../figures/1.jpg){width=90%}
+:::
+::: {.column width="50%"}
+- V. R. Joseph, Georgia Tech
+- **Maxpro** design — where to start
+- **Sequential** design — add points one by one
+- **Fusion** (KOH) — join cheap and expensive data
+:::
+:::
+
+## Tool 1: Maxpro Design
+
+::: {.columns}
+::: {.column width="55%"}
+Maxpro criterion:
+
+$$
+\min_D \sum_{i=1}^{n}\prod_{j\neq i}\frac{1}{\sum_{k=1}^p (x_{ik}-x_{jk})^2}
+$$
+
+- Start **evenly**: spread out in **every projection**
+:::
+::: {.column width="45%"}
+![Maxpro design](../figures/2.pdf){width=100%}
+:::
+:::
+
+## Tool 2: The Stand-In Model (Gaussian Process)
+
+- A **Gaussian process** is a normal distribution over **whole functions** — not one number
+- It predicts a value **and** an **uncertainty** at every point
+- Uncertainty tells us **where to test next**: hopeful \& unsure
+
+## The Whole Pipeline
+
+1. **Spread out** the starting points
+2. Feed in many **cheap** runs $\rightarrow$ a **rough map**
+3. Send **one expensive** run to the predicted valley
+4. **Repeat** — the map gets sharper every round
+
+## Our Question
+
+$$
+\widehat{\boldsymbol{x}} \approx \argmin_{\boldsymbol{x}\in[0,1]^p} h_\mathrm{H}(\boldsymbol{x})
+$$
+
+- Goal: minimize the expensive function with only **15 precise runs**
+- Three small questions:
+  - Does **combining the channels** help?
+  - Does **screening** the parameters help?
+  - Does it still work **in high dimensions**?
+
+## Answer 1: Combination Is the Key
+
+::: {.columns}
+::: {.column width="50%"}
+![Combination is the key](../figures/3.pdf){width=100%}
+:::
+::: {.column width="50%"}
+- Metric: **median** of the best found over 20 repeats — lower is better
+- Cheap + precise **beats** precise alone
+- 1-D: precise alone stuck at 0; with fusion $\rightarrow$ **global optimum**
+- 2-D: lands right next to the **known answer**
+:::
+:::
+
+## Answer 2: Screening Is Useless
+
+::: {.columns}
+::: {.column width="50%"}
+![Screening is useless](../figures/4.pdf){width=100%}
+:::
+::: {.column width="50%"}
+- Screening **ranks** parameters by cheap runs
+- But cheap runs are **biased** $\rightarrow$ ranking is unreliable
+- Result: **removing** screening actually helps
+:::
+:::
+
+## Answer 3: High Dimensions Fail
+
+::: {.columns}
+::: {.column width="50%"}
+![High dimensions fail](../figures/5.pdf){width=100%}
+:::
+::: {.column width="50%"}
+- In 8-D, fusion **collapses** too
+- Too few precise points to **sketch an 8-D landscape**
+- Fusion is decisive — but it has a **ceiling**
+:::
+:::
+
+## The Whole Picture
+
+::: {.columns}
+::: {.column width="55%"}
+![All results](../figures/6.pdf){height=65%}
+:::
+::: {.column width="45%"}
+- Low dims: full pipeline wins; drop fusion $\rightarrow$ breaks
+- High dims: **nothing works**
+- One line: **make every precise test count**; limit = dimensionality
+:::
+:::
+
+## Future Directions
+
+My Future Directions:
+
+1. **When is screening trustworthy**? — find the bias conditions
+2. **Tame high dimensions**? — add structure, or reduce dimension first
+3. **Real-world tool**: give it a budget — get the best plan
+
+## Summary
+
+- Not "more precise runs" — but "**more value per run**"
+- Limit: the **curse of high dimensions**
+
+## {.standout}
+
+Thank you!
