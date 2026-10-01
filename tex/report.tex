@@ -26,8 +26,8 @@
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
 
-\title{Bayesian Optimization on Multi-Fidelity Data}
-\subtitle{Making every precise measurement more valuable}
+\title{Making Every Experiment Count}
+\subtitle{A cheap guide for expensive tests}
 \author{Wenje Ma}
 \institute{Beijing Institute of Technology}
 \date{2026-10}
@@ -38,44 +38,35 @@
   \titlepage
 \end{frame}
 
-\note{Hello everyone, I am Wenje Ma. Today I want to share my recent work. It is about one question: when our budget for experiments is small, how do we make each experiment more valuable?}
-
-\begin{frame}{Begin: A Story}
-  Your job is to tune some parameters, but:
+\begin{frame}{The Problem: Few Expensive Tests}
+  Your job: tune parameters, but you face:
   \begin{itemize}
-    \item Only about fifteen expensive experiments allowed
-    \item Tune many interacting parameters --- more than ten
-    \item Real in engines, materials, \ldots
-    \item Question: spend a tiny budget in the smartest way?
+    \item Only about \textbf{fifteen expensive} experiments allowed
+    \item \textbf{Many interacting} parameters --- more than ten
+    \item Change one, the others move --- can't tune one at a time
+    \item So: spend a tiny budget in the \textbf{smartest way}?
   \end{itemize}
 \end{frame}
 
-\note{Let me start with a story. Imagine you work for a company, and your job is to tune some parameters. You have an experiment, but it is very expensive --- every run costs a lot, and you can only afford fifteen runs in total. The hard part: there are more than ten parameters, and they affect each other. Change one, and the others may change too. So you cannot try them one by one. You need the best combination of all of them, but you have only fifteen chances. What would you do? That is exactly the problem today. And it is not just a story --- engines, materials, and many real systems are exactly like this. Testing is expensive, and you get few chances. So the real question is: how do we spend a small budget in the smartest way?}
-
-\begin{frame}{Background 1: Black-Box and Budget}
-  Why is it HARD?
+\begin{frame}{Why It Is Hard: Black Box \& Budget}
   \begin{itemize}
     \item \textbf{Black box}: you see input and output, never the inside
     \item \textbf{Budget}: only fifteen precise runs, but a huge space
-    \item Task: find the best point of a high-dimensional black box
+    \item Task: find the \textbf{best point} of a high-dimensional black box
   \end{itemize}
 \end{frame}
 
-\note{Why is this hard? Two reasons. First, the black box. A black box means you only see input and output, never what is inside. It is like a locked machine --- you put in a coin and see the result, but you cannot open it. Our function is exactly that. We do not know its shape; we can only test it. Second, the budget. We can only run the precise experiment fifteen times, but the parameter space is huge. With so many parameters and so few chances, guessing is hopeless. So the starting point is: use fifteen chances to find the best point of a high-dimensional black box.}
-
-\begin{frame}{Background 2: Two Channels}
-  Good news: Two Channels:
+\begin{frame}{The Key Idea: Two Channels}
+  Good news --- our black box has two channels:
   \begin{equation*}
     h_k(\boldsymbol{x}) = h_{k-1}(\boldsymbol{x}) + \delta_k(\boldsymbol{x})
   \end{equation*}
   \begin{itemize}
-    \item Cheap channel: run many times, but biased
-    \item Expensive channel: only about 15 runs, accurate
-    \item Idea: combine them --- high = low + bias
+    \item \textbf{Cheap} channel: run many times, but \textbf{biased}
+    \item \textbf{Expensive} channel: only 15 runs, accurate
+    \item Idea: combine --- accurate = cheap + a correction
   \end{itemize}
 \end{frame}
-
-\note{The good news: our black box has two channels. One is cheap and fast. We can run it many times, but it has bias --- not fully accurate. The other is expensive but accurate. We can only afford it fifteen times. The key is how to combine them. My idea is simple: high fidelity equals low fidelity plus a bias. That is the equation.}
 
 \begin{frame}{The Skeleton Comes from One Person}
   \begin{columns}
@@ -86,24 +77,22 @@
     \column{0.5\textwidth}
       \begin{itemize}
         \item V.\ R.\ Joseph, Georgia Tech
-        \item Maxpro design --- where to start
-        \item Sequential design --- add points one by one
-        \item KOH fusion --- join cheap and expensive data
+        \item \textbf{Maxpro} design --- where to start
+        \item \textbf{Sequential} design --- add points one by one
+        \item \textbf{Fusion} (KOH) --- join cheap and expensive data
       \end{itemize}
   \end{columns}
 \end{frame}
 
-\note{Almost the whole skeleton comes from one person --- V. Roshan Joseph, a big name in experimental design. Let me show his picture. He gave us three pieces, and they are exactly the three parts of my pipeline. First, maxpro design --- how to choose the best starting points, so we waste none. Second, sequential design --- how to add points one by one, flexibly. Third, KOH fusion --- how to combine the cheap evaluations with the expensive ones.}
-
-\begin{frame}{Main Tools 1: Maxpro Design}
+\begin{frame}{Tool 1: Maxpro Design}
   \begin{columns}
     \column{0.55\textwidth}
-      The criterion of maxpro design:
+      Maxpro criterion:
       \begin{equation*}
         \min_D \sum_{i=1}^{n}\prod_{j\neq i}\frac{1}{\sum_{k=1}^p (x_{ik}-x_{jk})^2}
       \end{equation*}
       \begin{itemize}
-        \item Start evenly: spread in every projection
+        \item Start \textbf{evenly}: spread out in \textbf{every projection}
       \end{itemize}
     \column{0.45\textwidth}
       \begin{figure}
@@ -112,49 +101,37 @@
   \end{columns}
 \end{frame}
 
-\note{At the start we know nothing about the function, so the first points should cover the space evenly --- not piled in one corner, not overlapping. Maxpro design chooses points like that. It keeps them spread out, both in the whole space and in every low-dimensional projection. The criterion is the equation, and the effect is shown on the right.}
-
-\begin{frame}{Main Tools 2: Gaussian Process}
-  \begin{definition}{Gaussian Process}
-      A random function $Y(\boldsymbol x)$ is a \textbf{Gaussian process} if for any choice of $\boldsymbol x_1,\dots,\boldsymbol x_n$ and any $n\ge1$, $\boldsymbol Y=(Y(\boldsymbol x_1),\dots,Y(\boldsymbol x_n))'$ has a multivariate normal distribution.
-  \end{definition}
+\begin{frame}{Tool 2: The Stand-In Model (Gaussian Process)}
   \begin{itemize}
-    \item Surrogate: Gaussian process = a normal distribution over functions
-    \item It predicts a value, AND an uncertainty, at every point
+    \item A \textbf{Gaussian process} is a normal distribution over \textbf{whole functions} --- not one number
+    \item It predicts a value \textbf{and} an \textbf{uncertainty} at every point
+    \item Uncertainty tells us \textbf{where to test next}: hopeful \& unsure
   \end{itemize}
 \end{frame}
 
-\note{Next, we need a stand-in model to guess the black box. That stand-in is a Gaussian process. Think of it as a normal distribution on an infinite-dimensional space. A normal distribution gives one number; a Gaussian process gives a whole function, and also tells you how unsure it is at every point. That matters, because we need to know where to test next.}
-
-\begin{frame}{The Whole Process}
-  The whole pipeline:
+\begin{frame}{The Whole Pipeline}
   \begin{enumerate}
-    \item Spread out the starting points
-    \item Feed in many cheap runs $\rightarrow$ a rough map
-    \item Send one expensive run to the predicted valley
-    \item Repeat --- the map gets sharper every round
+    \item \textbf{Spread out} the starting points
+    \item Feed in many \textbf{cheap} runs $\rightarrow$ a \textbf{rough map}
+    \item Send \textbf{one expensive} run to the predicted valley
+    \item \textbf{Repeat} --- the map gets sharper every round
   \end{enumerate}
 \end{frame}
 
-\note{Now the whole pipeline, in four steps. One, choose the starting points, spread out evenly. Two, feed the model with cheap points. Many cheap tests go into the Gaussian process, so it draws a rough map of the land. Three, the precise test. The model says where the valley bottom probably is. We go there and run one expensive, accurate test. Four, repeat. Each round the map improves, and we get closer to the best point.}
-
 \begin{frame}{Our Question}
-  Our Question:
   \begin{equation*}
     \widehat{\boldsymbol{x}} \approx \argmin_{\boldsymbol{x}\in[0,1]^p} h_\mathrm{H}(\boldsymbol{x})
   \end{equation*}
   \begin{itemize}
-    \item Goal: minimize the expensive function, with only 15 precise runs
+    \item Goal: minimize the expensive function with only \textbf{15 precise runs}
     \item Three small questions:
       \begin{itemize}
-        \item Does combining the two channels help?
-        \item Does screening the parameters help?
-        \item Does it still work in high dimensions?
+        \item Does \textbf{combining the channels} help?
+        \item Does \textbf{screening} the parameters help?
+        \item Does it still work \textbf{in high dimensions}?
       \end{itemize}
   \end{itemize}
 \end{frame}
-
-\note{Here is our question. Our task is in the equation: find the point that makes the expensive function as small as possible, using only fifteen precise tests. I will answer three smaller questions. Is combination useful? Is screening useful? Does it still work in high dimensions?}
 
 \begin{frame}{Answer 1: Combination Is the Key}
   \begin{columns}
@@ -164,15 +141,13 @@
       \end{figure}
     \column{0.5\textwidth}
       \begin{itemize}
-        \item Metric: median of the best found, over 20 repeats
-        \item Cheap + precise beats precise alone
-        \item 1-D: precise alone stuck at 0; with fusion $\rightarrow$ global optimum
-        \item 2-D: lands right next to the known answer
+        \item Metric: \textbf{median} of the best found over 20 repeats --- lower is better
+        \item Cheap + precise \textbf{beats} precise alone
+        \item 1-D: precise alone stuck at 0; with fusion $\rightarrow$ \textbf{global optimum}
+        \item 2-D: lands right next to the \textbf{known answer}
       \end{itemize}
   \end{columns}
 \end{frame}
-
-\note{Our evaluation metric is the median of the minimum values obtained from 20 experimental optimizations. As the figure shows: combination is the key. With the same budget, a few precise tests plus many cheap tests beats only precise tests. Low dimensions are very clear. In one dimension, only precise tests cannot find the best point --- it stays at zero. Add the cheap tests and fusion, and it jumps to the global optimum. In two and four dimensions, it gets very close to the standard answer.}
 
 \begin{frame}{Answer 2: Screening Is Useless}
   \begin{columns}
@@ -182,14 +157,12 @@
       \end{figure}
     \column{0.5\textwidth}
       \begin{itemize}
-        \item Screening ranks parameters by cheap runs
-        \item But cheap runs are biased $\rightarrow$ the ranking is unreliable
-        \item Result: removing screening actually helps
+        \item Screening \textbf{ranks} parameters by cheap runs
+        \item But cheap runs are \textbf{biased} $\rightarrow$ ranking is unreliable
+        \item Result: \textbf{removing} screening actually helps
       \end{itemize}
   \end{columns}
 \end{frame}
-
-\note{As the figure shows: screening is useless, it even hurts. Screening ranks parameters using cheap tests, but the cheap tests have bias, so the ranking is unreliable. Without it, results are better.}
 
 \begin{frame}{Answer 3: High Dimensions Fail}
   \begin{columns}
@@ -199,16 +172,14 @@
       \end{figure}
     \column{0.5\textwidth}
       \begin{itemize}
-        \item In 8-D, fusion collapses too
-        \item Too few precise points to sketch an 8-D landscape
-        \item Fusion is decisive --- but it has a ceiling
+        \item In 8-D, fusion \textbf{collapses} too
+        \item Too few precise points to \textbf{sketch an 8-D landscape}
+        \item Fusion is decisive --- but it has a \textbf{ceiling}
       \end{itemize}
   \end{columns}
 \end{frame}
 
-\note{As the figure shows: in eight dimensions, fusion also fails --- the curse of dimensionality. Few precise points cannot draw the shape of an eight-dimensional land. So: fusion is the decisive part, but it has a ceiling.}
-
-\begin{frame}{Global Picture}
+\begin{frame}{The Whole Picture}
   \begin{columns}
     \column{0.55\textwidth}
       \begin{figure}
@@ -217,38 +188,30 @@
     \column{0.45\textwidth}
       \begin{itemize}
         \item Low dims: full pipeline wins; drop fusion $\rightarrow$ breaks
-        \item High dims: nothing works
-        \item One line: make every precise test count; limit = dimensionality
+        \item High dims: \textbf{nothing works}
+        \item One line: \textbf{make every precise test count}; limit = dimensionality
       \end{itemize}
   \end{columns}
 \end{frame}
 
-\note{Put all results in one figure and the picture is clear. The complete pipeline is best in low dimensions. Remove the combination, and it breaks even in low dims. In high dimensions, nothing works. So it all comes down to one sentence: multi-fidelity is not about spending more money on precise tests --- it is about making each precise test more valuable. And its boundary is set by the curse of dimensionality.}
-
 \begin{frame}{Future Directions}
   My Future Directions:
   \begin{enumerate}
-    \item When is screening trustworthy? (find the bias conditions)
-    \item Tame high dimensions? (add structure, or reduce dimension first)
-    \item Real-world tool: give it a budget --- get the best plan
+    \item \textbf{When is screening trustworthy}? --- find the bias conditions
+    \item \textbf{Tame high dimensions}? --- add structure, or reduce dimension first
+    \item \textbf{Real-world tool}: give it a budget --- get the best plan
   \end{enumerate}
 \end{frame}
 
-\note{Three directions next. First, when is screening trustworthy? It fails because of bias. So the question is: under what conditions does the cheap-test ranking still match the real ranking? If we know that, we can check first and only screen when it is safe. Second, how to break the curse of dimensionality? It already fails in eight dimensions. Maybe put some structure on the bias, or reduce the dimension first. Third, push it into the real world --- engines, materials, biology, where experiments really cost money. Maybe even a tool: tell it your budget, and it gives you the best plan by itself.}
-
 \begin{frame}{Summary}
   \begin{itemize}
-    \item Not ``more precise runs'' --- but ``more value per run''
-    \item Limit: the curse of high dimensions
+    \item Not ``more precise runs'' --- but ``\textbf{more value per run}''
+    \item Limit: the \textbf{curse of high dimensions}
   \end{itemize}
 \end{frame}
-
-\note{Let me finish with one sentence. Multi-fidelity does not ask you to spend more money on precise tests. It makes each precise test more valuable. Its limit is controlled by high dimensions.}
 
 \begin{frame}[standout]
   Thank you!
 \end{frame}
-
-\note{That is all. Thank you for listening!}
 
 \end{document}
