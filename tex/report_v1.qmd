@@ -9,13 +9,21 @@ format:
     pdf-engine: xelatex
     include-in-header:
       text: |
+        \metroset{block=fill}
+        \setbeamercolor{note title}{bg=white}
+        \setbeamercolor{note page}{bg=white}
+        \setbeamercolor{background canvas}{bg=black!2}
         \DeclareMathOperator*{\argmin}{arg\,min}
         \DeclareMathOperator*{\argmax}{arg\,max}
+        \setmathfont[version=bold]{XITSMath-Bold.otf}
+mainfont: "Latin Modern Roman"
+sansfont: "Latin Modern Roman"
+monofont: "Consolas"
+CJKmainfont: "SimHei"
+CJKsansfont: "SimHei"
+CJKmonofont: "SimHei"
+mathfont: "Latin Modern Math"
 ---
-
-::: {.notes}
-Hello everyone, I am Wenje Ma. The title of my talk is "Bayesian Optimization Based on Multi-Fidelity Data."
-:::
 
 # Formal Problem Statement
 
@@ -31,6 +39,10 @@ There is a bias structure between the two fidelities, whose form is unknown. The
 $$
 \widehat{\boldsymbol{x}}\approx\argmin_{\boldsymbol{x}\in\left[0,1\right]^{p}}h_\mathrm{H}\left(\boldsymbol{x}\right)
 $$
+
+::: {.notes}
+Hello everyone, I am Wenje Ma. The title of my talk is "Bayesian Optimization Based on Multi-Fidelity Data."
+:::
 
 ::: {.notes}
 Let us first look at the formal problem statement. The design parameters bold x live in the p-dimensional unit interval, and the simulator is a black box y equals h bold x. Two evaluation channels are available: the low-fidelity h L bold x is cheap, cost c L, but has a systematic bias; the high-fidelity h H bold x is expensive, cost c H much greater than c L, and is accurate. The bias structure between the two fidelities is unknown. The total budget is 15 high-fidelity equivalents. Define hat bold x as the algorithm's best estimate; hat h equals h H bold x, the high-fidelity value measured there. Our goal is to estimate as accurately as possible the bold x minimizing h H bold x.
