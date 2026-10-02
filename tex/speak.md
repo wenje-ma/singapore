@@ -28,7 +28,7 @@ If we can **learn that correction** from a few high-fidelity runs, all those che
 
 Almost the whole skeleton of this method comes from **one person** — **V. Roshan Joseph**, a big name in experimental design.
 
-![1.jpg]()
+![1.jpg](../figures/1.jpg){width=50%}
 
 He gave us **two pieces**, and they map onto **two questions**. First, where do we put our first experiments? That's the **maxpro design**. Second, how do we add experiments one at a time? That's the **sequential design**. He built each piece **separately**, but never joined them **end to end**. So my work is simpler than it sounds: I took his two pieces, connected them into **one pipeline**, and tested whether **each piece earns its place**.
 
@@ -40,7 +40,7 @@ $$
 \min_D \sum_{i=1}^{n}\prod_{j\neq i}\frac{1}{\sum_{k=1}^p (x_{ik}-x_{jk})^2}
 $$
 
-![2.svg]()
+![2.svg](../figures/2.svg){width=50%}
 
 ---
 
@@ -68,25 +68,25 @@ Enough setup. Let me show you **what actually happened** when I ran it.
 
 ---
 
-![3.svg]()
+![3.svg](../figures/3.svg){width=50%}
 
-First result: **combining the fidelities is the key**. With the same budget, **a few high-fidelity plus many low-fidelity beats only high-fidelity**. Low dimensions are the **clearest**. In **one dimension**, high-fidelity tests alone can't find the best point — it **stays at zero**, meaning it never improved. Add the low-fidelity runs and the fusion step, and it **jumps to the true best point**. In **two and four dimensions**, it lands **very close to the known best answer**. So if your tests are expensive, the message is clear: don't just run the expensive one — **bring a cheap one along to help**.
+First result: **combining the fidelities is the key**. With the same budget, **a few high-fidelity plus many low-fidelity beats only high-fidelity**. Low dimensions are the **clearest**. In **one dimension**, high-fidelity tests alone **can't find the best point** — it **stays at zero**. Add the low-fidelity runs and the fusion step, and it **jumps to the true best point**. In **two and four dimensions**, it lands very close to the **known best answer**. So if your tests are expensive, the message is clear: don't just run the expensive one — **bring a cheap one along to help**.
 
 ---
 
-![4.svg]()
+![4.svg](../figures/4.svg){width=50%}
 
 Second result: **screening is useless** — it even **hurts**. Screening **ranks the parameters** with cheap tests, and keeps only the ones it calls important. But the cheap tests are **biased** — so the ranking is **unreliable**: the parameter it calls important might not matter at all in the high-fidelity function. When I **removed** the screening step, the results actually **got better**. My honest answer to that question is **no**: screening doesn't help, at least the way I set it up. It's a nice **counterintuitive finding**: the step that sounds like it saves work actually **costs you accuracy**.
 
 ---
 
-![5.svg]()
+![5.svg](../figures/5.svg){width=50%}
 
 Third result: **high dimensions fail**. In **eight dimensions**, even fusion stops working — the **curse of dimensionality**. Here's what that phrase means. To sketch an **8-D landscape**, you need points scattered through **eight dimensions**; but we have only **fifteen precise points** — far too few to cover a space that big. It's the price of exploring a space that's **too big for the points we can afford** — the classic story of high dimensions: **more space, the same few points**. The map stays **nearly empty**, and the method **gets lost**. In low dimensions, fusion is the difference between **failing and finding the optimum**. In high dimensions, even fusion has a **ceiling**.
 
 ---
 
-![6.svg]()
+![6.svg](../figures/6.svg){width=100%}
 
 Put all the results in one figure and the picture is **clear**. The **complete pipeline** is best in **low dimensions**. **Drop the fusion step**, and it breaks even in low dimensions. In **high dimensions**, nothing works. So it all comes down to **one sentence**: it's not about **spending more money** on high-fidelity tests — it's about **making each precise test more valuable** by leaning on the cheap ones. And the limit is set by **how many dimensions** you're working in — the story just **gets worse the higher you go**.
 
