@@ -18,9 +18,7 @@ Why is this **hard**? **Two reasons.** First, the **black box**. A black box mea
 
 Now the good news: our black box has **two fidelities**. One is **low-fidelity** — cheap and fast, we can run it hundreds of times — but it has **bias**. It's like a **rough map**: the shape is there, the details are off. The other is **high-fidelity** — expensive and accurate, and we can only afford it **fifteen times**. So the further question is: how do we use the cheap low-fidelity runs to guide the **expensive high-fidelity ones**? My idea is **simple**. Think of the high-fidelity answer as the low-fidelity answer **plus a correction**:
 
-$$
-h_\mathrm{H}(\boldsymbol{x})=h_\mathrm{L}(\boldsymbol{x})+\delta(\boldsymbol{x})
-$$
+> eq: 1
 
 If we can **learn that correction** from a few high-fidelity runs, all those cheap low-fidelity runs suddenly become **useful**. It's like having a **cheap friend** who can run anywhere in the city quickly but only guesses the address, and an **expensive friend** who goes straight there but can only do it a few times. We let the **cheap friend scout**, and the **expensive friend confirm**.
 
@@ -28,7 +26,7 @@ If we can **learn that correction** from a few high-fidelity runs, all those che
 
 Almost the whole skeleton of this method comes from **one person** — **V. Roshan Joseph**, a big name in experimental design.
 
-![1.jpg](../figures/1.jpg){width=50%}
+> fig: 1
 
 He gave us **two pieces**, and they map onto **two questions**. First, where do we put our first experiments? That's the **maxpro design**. Second, how do we add experiments one at a time? That's the **sequential design**. He built each piece **separately**, but never joined them **end to end**. So my work is simpler than it sounds: I took his two pieces, connected them into **one pipeline**, and tested whether **each piece earns its place**.
 
@@ -36,11 +34,9 @@ He gave us **two pieces**, and they map onto **two questions**. First, where do 
 
 First piece — **where to start**. At the very beginning we **know nothing** about the function, so the first points should **cover the space evenly** — not piled in one corner, not overlapping. **Maxpro design** does exactly that. The name, **maximum projection**, means it keeps points spread out not just in the whole space, but in **every low-dimensional shadow**. So even if two points **look close** when you squash the space down, they're still **far apart** in the full space. The criterion is this equation, and the effect is in the figure:
 
-$$
-\min_D \sum_{i=1}^{n}\prod_{j\neq i}\frac{1}{\sum_{k=1}^p (x_{ik}-x_{jk})^2}
-$$
+> eq: 2
 
-![2.svg](../figures/2.svg){width=50%}
+> fig: 2
 
 ---
 
@@ -54,9 +50,7 @@ Now **the whole pipeline**, in **four steps**. One, choose the **starting points
 
 Here is the **formal question** I want to answer:
 
-$$
-\widehat{\boldsymbol{x}} \approx \argmin_{\boldsymbol{x}\in[0,1]^p} h_\mathrm{H}(\boldsymbol{x})
-$$
+> eq: 3
 
 Find the point that makes the high-fidelity function **as small as possible**, using only **fifteen high-fidelity tests**. I broke this into **three smaller questions**. First, does **combining the two fidelities** help? Second, does **screening** help — using cheap tests to decide **which parameters matter**, and **dropping the rest**? And third, does the whole thing still work **in high dimensions**?
 
@@ -68,25 +62,25 @@ Enough setup. Let me show you **what actually happened** when I ran it.
 
 ---
 
-![3.svg](../figures/3.svg){width=50%}
+> fig: 3
 
 First result: **combining the fidelities is the key**. With the same budget, **a few high-fidelity plus many low-fidelity beats only high-fidelity**. Low dimensions are the **clearest**. In **one dimension**, high-fidelity tests alone **can't find the best point** — it **stays at zero**. Add the low-fidelity runs and the fusion step, and it **jumps to the true best point**. In **two and four dimensions**, it lands very close to the **known best answer**. So if your tests are expensive, the message is clear: don't just run the expensive one — **bring a cheap one along to help**.
 
 ---
 
-![4.svg](../figures/4.svg){width=50%}
+> fig: 4
 
 Second result: **screening is useless** — it even **hurts**. Screening **ranks the parameters** with cheap tests, and keeps only the ones **it calls important**. But the cheap tests are **biased** — so the ranking is **unreliable**: the parameter it calls important might not **matter at all** in the high-fidelity function. When I **removed** the screening step, the results actually **got better**. My honest answer to that question is **no**: screening doesn't help, at least the way I set it up. It's a nice **counterintuitive finding**: the step that sounds like it saves work actually **costs you accuracy**.
 
 ---
 
-![5.svg](../figures/5.svg){width=50%}
+> fig: 5
 
 Third result: **high dimensions fail**. In **eight dimensions**, even **fusion stops working** — the **curse of dimensionality**. To sketch an **8-D landscape**, you need points **scattered through** eight dimensions; but we have only **fifteen precise points**. It's the price of exploring a space that's **too big for the points we can afford** — the classic story of high dimensions: **more space, the same few points**. The map stays **nearly empty**, and the method **gets lost**. In low dimensions, fusion is the difference between **failing and finding the optimum**. In high dimensions, even fusion has a **ceiling**.
 
 ---
 
-![6.svg](../figures/6.svg){width=100%}
+> fig: 6
 
 Put **all the results** in one figure and the picture is **clear**. The **complete pipeline** is best in **low dimensions**. **Drop the fusion step**, and it **breaks even** in low dimensions. In **high dimensions**, nothing works. So it's not about **spending more money** on high-fidelity tests — it's about **making each precise test more valuable** by leaning on the cheap ones. And the limit is set by **how many dimensions** you're working in — the story just **gets worse the higher you go**.
 

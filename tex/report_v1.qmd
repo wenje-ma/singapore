@@ -6,8 +6,11 @@ date: "2026-10"
 format:
   beamer:
     theme: metropolis
-# 注：原版引用了 ref.bib（Morris/Mitchell、Joseph、Kennedy & O'Hagan、Jones、Song 等），
-# 该文件目前不在仓库里，如需渲染参考文献，请把 ref.bib 放回本目录。
+    pdf-engine: xelatex
+    include-in-header:
+      text: |
+        \DeclareMathOperator*{\argmin}{arg\,min}
+        \DeclareMathOperator*{\argmax}{arg\,max}
 ---
 
 ::: {.notes}
@@ -39,7 +42,7 @@ Let us first look at the formal problem statement. The design parameters bold x 
 
 Maximin Latin hypercube sampling design (Morris and Mitchell, 1995) [@MorrisMitchell1995]:
 
-![Maximin Latin hypercube sampling design](../figures/1){width=33%}
+![Maximin Latin hypercube sampling design](../figures/1.jpg){width=33%}
 
 ::: {.notes}
 Let us lay the theoretical foundation. We estimate bold x through Bayes' formula, with a prior and a posterior. At the prior stage we know nothing about the function, so the initial points must cover the space as uniformly as possible. To ensure that in every one-dimensional projection all coordinates are distinct, Morris and Mitchell proposed the maximin Latin hypercube sampling design in 1995; as Figure 1 shows, it covers the space uniformly.
@@ -160,11 +163,10 @@ $$
 where $k=2,\dots,K$, and $\delta_k\left(\boldsymbol{x}\right)$ denotes the bias between the outputs of the $(k-1)$-th and the $k$-th fidelity levels. We make the following Gaussian process assumptions:
 
 $$
-\begin{aligned}
-&\delta_k\left(\boldsymbol{x}\right)\sim\mathcal{GP}\left\{0,\tau_k^2R_k\left(\cdot\right)\right\}\\
-&h_\mathrm{L}\left(\boldsymbol{x}\right)\sim\mathcal{GP}\left\{\mu,\tau_\mathrm{L}^2R_\mathrm{L}\left(\cdot\right)\right\}
-\end{aligned}
-\tag{8}
+\begin{align}
+&\delta_k\left(\boldsymbol{x}\right)\sim\mathcal{GP}\left\{0,\tau_k^2R_k\left(\cdot\right)\right\}\notag\\
+&h_\mathrm{L}\left(\boldsymbol{x}\right)\sim\mathcal{GP}\left\{\mu,\tau_\mathrm{L}^2R_\mathrm{L}\left(\cdot\right)\right\}\tag{8}
+\end{align}
 $$
 
 ::: {.notes}
@@ -186,9 +188,8 @@ Nested design (Kennedy and O'Hagan, 2000): **$D_1\supset D_2\supset\dots\supset 
 Sequential maximum-entropy (Shannon, 1948) [@Shannon1948] design problem:
 
 $$
-\begin{aligned}D_1^*&=\argmax_{D_1}\left|\boldsymbol{R}_1\left(D_1,D_1\right)\right|\\
-D_2^*&=\argmax_{D_2\subseteq D_1^*}\left|\boldsymbol{R}_2\left(D_2,D_2\right)\right|\end{aligned}
-\tag{9}
+\begin{align}D_1^*&=\argmax_{D_1}\left|\boldsymbol{R}_1\left(D_1,D_1\right)\right|\notag\\
+D_2^*&=\argmax_{D_2\subseteq D_1^*}\left|\boldsymbol{R}_2\left(D_2,D_2\right)\right|\tag{9}\end{align}
 $$
 
 where $\left|\cdot\right|$ is the determinant, and $\boldsymbol{R}_k\left(D,D'\right)$ is the correlation matrix of the $k$-th fidelity level whose $\left(i,j\right)$ element is $R_k\left(\boldsymbol{a}_i-\boldsymbol{b}_j\right)$.
@@ -386,7 +387,7 @@ For each test function we construct a low-fidelity version. Inspired by Song et 
 Low-fidelity versions of the four test functions:
 
 $$
-\begin{aligned}
+\begin{align}
 f_\mathrm{L}\left(x\right)&=f_\mathrm{H}\left(x\right)+0.3\left(x-\frac{1}{2}\right)
 \tag{24}\\
 f_\mathrm{L}\left(\boldsymbol{u}\right)&=f_\mathrm{H}\left(\boldsymbol{u}\right)+40\cdot\frac{u_1+u_2-1}{2}
@@ -395,7 +396,7 @@ f_\mathrm{L}\left(\boldsymbol{x}\right)&=f_\mathrm{H}\left(\boldsymbol{x}\right)
 \tag{26}\\
 f_\mathrm{L}\left(\boldsymbol{u}\right)&=f_\mathrm{H}\left(\boldsymbol{u}\right)+70\cdot\frac{\sum_{i=1}^{8}\left(u_i-\frac{1}{2}\right)}{8}
 \tag{27}\\
-\end{aligned}
+\end{align}
 $$
 
 ::: {.notes}
@@ -409,11 +410,10 @@ The resulting low-fidelity versions are given in (24) to (27).
 Complete pipeline M1:
 
 $$
-\begin{aligned}
-&\quad\;\;\boxed{\text{Maximum Projection Design}}\to\boxed{\text{Sequential Design}}\\
-&\to\boxed{\text{Nested Design}}\to\boxed{\text{Expected Improvement}}
-\end{aligned}
-\tag{28}
+\begin{align}
+&\quad\;\;\boxed{\text{Maximum Projection Design}}\to\boxed{\text{Sequential Design}}\notag\\
+&\to\boxed{\text{Nested Design}}\to\boxed{\text{Expected Improvement}}\tag{28}
+\end{align}
 $$
 
 Blank control M0:
@@ -432,21 +432,19 @@ Now the experiments. The complete pipeline is M1 in (28); the blank control M0 i
 Removing only the nested design S1:
 
 $$
-\begin{aligned}
-&\quad\;\;\boxed{\text{Maximum Projection Design}}\to\boxed{\text{Sequential Design}}\\
-&\to\boxed{\text{Expected Improvement}}
-\end{aligned}
-\tag{30}
+\begin{align}
+&\quad\;\;\boxed{\text{Maximum Projection Design}}\to\boxed{\text{Sequential Design}}\notag\\
+&\to\boxed{\text{Expected Improvement}}\tag{30}
+\end{align}
 $$
 
 Removing only the sequential design S2:
 
 $$
-\begin{aligned}
-&\;\;\quad\boxed{\text{Maximum Projection Design}}\to\boxed{\text{Nested Design}}\\
-&\to\boxed{\text{Expected Improvement}}
-\end{aligned}
-\tag{31}
+\begin{align}
+&\;\;\quad\boxed{\text{Maximum Projection Design}}\to\boxed{\text{Nested Design}}\notag\\
+&\to\boxed{\text{Expected Improvement}}\tag{31}
+\end{align}
 $$
 
 ::: {.notes}
