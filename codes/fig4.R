@@ -1,3 +1,9 @@
+##################################################################
+# fig4.R — figure: screening is useless
+#
+# Reproduces figures/4.pdf: median found-minimum f* in 1/2/4-D,
+# comparing with-screening (M1) vs no-screening (S2).
+##################################################################
 setwd("C:/Users/18904/Github/singapore/codes")
 if(!dir.exists("data"))dir.create("data")
 if(!dir.exists("../figures"))dir.create("../figures")

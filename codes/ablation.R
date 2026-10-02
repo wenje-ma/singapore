@@ -1,3 +1,14 @@
+##################################################################
+# ablation.R — ablation experiment (component contribution)
+#
+# Configs (screening, fusion):
+#   M1 (yes, yes) full pipeline ; S2 (no, yes) fusion only
+#   S1 (yes, no)  screening only ; M0 (no, no) blank (single-fidelity EI)
+# For one config, runs the pipeline nrep times with a forced n2 = 5
+# (so the configs stay distinguishable), caches results to
+# data/ablation-<config>-d*.RData, and returns
+# fstars / bests / outs / seed.seq for that config.
+##################################################################
 setwd("C:/Users/18904/Github/singapore/codes")
 library(lhs)
 ablation=function(fH,fL,b,p,n2=5,budget=15,cost=20,nrep=20,config="M1",cand=NULL){

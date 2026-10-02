@@ -1,3 +1,13 @@
+##################################################################
+# run_calibrate.R — driver for the calibration experiment
+#
+# Sources the algorithm files, sets budget/cost/n2.grid/nrep, runs
+# calibrate() on all four benchmarks, and saves
+# data/calibrate-summary.RData. Produces the optimal number of
+# high-fidelity evaluations per dimension:
+#   n2*: d1 = 2 , d2 = 14 , d4 = 14 , d8 = 14
+# (the n2 with the smallest median found-minimum f*).
+##################################################################
 setwd("C:/Users/18904/Github/singapore/codes")
 rm(list=ls())
 data.dir="data"; if(!dir.exists(data.dir))dir.create(data.dir,recursive=TRUE)

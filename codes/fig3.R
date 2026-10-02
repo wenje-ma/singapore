@@ -1,3 +1,9 @@
+##################################################################
+# fig3.R — figure: fusion matters
+#
+# Reproduces figures/3.pdf: median found-minimum f* in 1/2/4-D,
+# comparing high-fidelity alone (M0) vs high+low fusion (S2).
+##################################################################
 setwd("C:/Users/18904/Github/singapore/codes")
 if(!dir.exists("data"))dir.create("data")
 if(!dir.exists("../figures"))dir.create("../figures")

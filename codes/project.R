@@ -1,3 +1,26 @@
+##################################################################
+# project.R — main multi-fidelity optimization pipeline
+#
+# Formal problem: minimize the expensive black box
+#   x̂ ≈ argmin_{x∈[0,1]^p} h_H(x)
+# under a budget of 15 high-fidelity equivalents. Two channels:
+#   h_L cheap/biassed (cost c_L) ; h_H accurate (cost c_H ≫ c_L),
+# with an unknown bias structure between them.
+#
+# Complete pipeline M1 (28): Maxpro → Sequential → Nested → EI.
+# Ablations: M0 blank (29), S1 no-nested (30), S2 no-sequential (31).
+# (Sequential point selection is carried out via EI in the loop.)
+#
+# Budget bookkeeping, in high-fidelity equivalents:
+#   n1   = floor((budget - n2)/2 * cost)   low-fidelity initial points
+#   used = n2 + n1/cost + 3*m/cost*screening
+#   step = 1 + multifidelity/cost          cost of one extra point
+# Falls back to maxpro-only (fusion & screening off) when the budget
+# is too small for a nested design (n1 < n2 or n1 <= 0). Screening
+# keeps parameters whose MOFAT total-effect measure exceeds the
+# median; all fits use only the kept columns S.
+# Returns xstar (argmin yH), fstar, the best-trace, and budget used.
+##################################################################
 setwd("C:/Users/18904/Github/singapore/codes")
 library(lhs)
 project=function(fH,fL,p,xmin=rep(0,p),xmax=rep(1,p),screening=TRUE,multifidelity=TRUE,budget=15,cost=20,n2=3,m=3*p,nCandidate=5000,cand=NULL,seed=1){

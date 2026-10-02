@@ -1,3 +1,16 @@
+##################################################################
+# calibrate.R — calibration experiment (find n2*)
+#
+# Sweeps n2 over a grid, runs the full pipeline nrep times per n2,
+# caches every result to data/calibrate-d*.RData, and reports the
+# median f* per n2. n2star = the n2 with the smallest median.
+#
+# Calibration result (n2* by dimension):
+#   d1 = 2 ,  d2 = 14 ,  d4 = 14 ,  d8 = 14
+# Interpretation: under a tiny budget the initial design dominates —
+# the room left for the sequential and fusion components is squeezed
+# out almost entirely by the budget.
+##################################################################
 setwd("C:/Users/18904/Github/singapore/codes")
 library(lhs)
 calibrate=function(fH,fL,b,p,budget,cost,n2.grid,nrep){

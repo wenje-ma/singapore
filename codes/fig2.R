@@ -1,3 +1,10 @@
+##################################################################
+# fig2.R — figure: the maxpro design in 2-D
+#
+# Reproduces figures/2.pdf: a 7-point maximum projection design on
+# [0,1]^2 with its grid lines. Gray theme (points #222222, grid
+# #bbbbbb, frame #666666).
+##################################################################
 setwd("C:/Users/18904/Github/singapore/codes")
 if(!dir.exists("data"))dir.create("data")
 if(!dir.exists("../figures"))dir.create("../figures")

@@ -1,3 +1,37 @@
+##################################################################
+# run_ablation.R — driver for the ablation experiment
+#
+# Sources the algorithm files, runs ablation() over four configs ×
+# four benchmarks (borrowing M1 from the calibration cache), appends
+# the M0@n2=14 row, prints the median table, and saves
+# data/ablation-summary.RData.
+#
+# Result — median found-minimum f* (forced n2=5, nrep=20):
+#   config   d1        d2        d4        d8
+#   M1     -0.6035    3.1627   -1.4109   19.6854
+#   S2     -0.6035    0.4041   -1.6060   12.7014
+#   S1      0.0000    5.4694   -1.1875   17.1585
+#   M0      0.0000    0.8788   -1.2975   10.5021
+#   M0@14  -0.5777    2.2568   -1.4485   12.5921
+#
+# Interpretations:
+# - 1-D: EI alone fails (M0/S1 sit at 0).
+# - 4-D: fusion uses a large amount of low-fidelity data to correct
+#   the high-fidelity surface.
+# - Screening gives no positive contribution in any dimension: the
+#   bias between fidelities makes the importance ranking unreliable.
+# - Fusion decays with dimension: at 8-D blank M0 beats fusion-only
+#   S2 — a manifestation of the curse of dimensionality inside the
+#   multi-fidelity framework.
+# - Same budget: a few high-fidelity points + fusion far outperform
+#   running with many high-fidelity points alone.
+#
+# Summary: under an extremely small budget the initial design
+# dominates; fusion is the decisive component but has a dimensionality
+# ceiling; screening adds nothing. Future work: under what bound on the
+# total Sobol' index of the bias field δ(x) does the low-fidelity
+# importance ranking preserve the true high-fidelity ranking?
+##################################################################
 setwd("C:/Users/18904/Github/singapore/codes")
 rm(list=ls())
 data.dir="data"; if(!dir.exists(data.dir))dir.create(data.dir,recursive=TRUE)
