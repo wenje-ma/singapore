@@ -111,6 +111,10 @@ Put **all the results** in one figure and the picture is **clear**. The **comple
 
 So, when **tests are expensive**, the smartest thing isn't to **run more high-fidelity ones** — it's to **make every single one count**, by letting cheap low-fidelity runs do the **heavy lifting**. That's **multi-fidelity** — and that's just the **Research on Multi-Fidelity Data-Based Optimization Algorithms**.
 
+## Github
+
+The complete code and details are available at `wenje-ma/singapore`.
+
 ## Thank you for listening
 
 **Thank you for listening**!
