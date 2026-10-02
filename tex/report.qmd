@@ -1,9 +1,8 @@
 ---
-title: "Making Every Experiment Count"
-subtitle: "A cheap guide for expensive tests"
+title: "Research on Multi-Fidelity Data-Based Optimization Algorithms"
 author: "Wenje Ma"
 institute: "Beijing Institute of Technology"
-date: "2026-10"
+date: "2026-10-05"
 format:
   beamer:
     theme: metropolis
@@ -26,155 +25,207 @@ CJKmonofont: "SimHei"
 mathfont: "Latin Modern Math"
 ---
 
-## The Problem: Few Expensive Tests
+## What is multi-fidelity?
 
-Your job: tune parameters, but you face:
+- **Fidelity**: how *faithful* a test is
+- **High-fidelity**: *expensive*, but precise
+- **Low-fidelity**: *cheap*, but a little off
+- **Multi-fidelity**: use *both*
 
-- Only about **fifteen expensive** experiments allowed
-- **Many interacting** parameters — more than ten
-- Change one, the others move — can't tune one at a time
-- So: spend a tiny budget in the **smartest way**?
+How to use them together to find the best answer?
 
-## Why It Is Hard: Black Box \& Budget
+## Here's my plan
 
-- **Black box**: you see input and output, never the inside
-- **Budget**: only fifteen precise runs, but a huge space
-- Task: find the **best point** of a high-dimensional black box
+```{=latex}
+\setbeamertemplate{section in toc}[sections numbered]
+\tableofcontents[hideallsubsections]
+```
 
-## The Key Idea: Two Channels
+# A quick story
 
-Good news — our black box has two channels:
+## Testing is expensive, few chances
 
-$$
-h_k(\boldsymbol{x}) = h_{k-1}(\boldsymbol{x}) + \delta_k(\boldsymbol{x})
-$$
+You work for a company, but ---
 
-- **Cheap** channel: run many times, but **biased**
-- **Expensive** channel: only 15 runs, accurate
-- Idea: combine — accurate = cheap + a correction
+- Tune parameters of an *experiment* --- every run costs money
+- More than 10 parameters, and they *affect each other*
+- Can't tune them *one at a time* --- need the best combination
+- Engines, materials, biology: the same story
 
-## The Skeleton Comes from One Person
+How to spend a tiny budget smartly?
 
-::: {.columns}
-::: {.column width="50%"}
-![V. R. Joseph](../figures/1.jpg){width=90%}
-:::
-::: {.column width="50%"}
-- V. R. Joseph, Georgia Tech
-- **Maxpro** design — where to start
-- **Sequential** design — add points one by one
-- **Fusion** (KOH) — join cheap and expensive data
-:::
-:::
+## Why is it so hard? Two reasons
 
-## Tool 1: Maxpro Design
+Two reasons:
 
-::: {.columns}
-::: {.column width="55%"}
-Maxpro criterion:
+- **Black box**: only input and output, never the inside --- a simulation or test bench
+- **Budget**: an enormous parameter space, but only about 15 runs
 
-$$
-\min_D \sum_{i=1}^{n}\prod_{j\neq i}\frac{1}{\sum_{k=1}^p (x_{ik}-x_{jk})^2}
-$$
+Use 15 runs to find the best point of a high-dimensional black box.
 
-- Start **evenly**: spread out in **every projection**
-:::
-::: {.column width="45%"}
-![Maxpro design](../figures/2.pdf){width=100%}
-:::
-:::
+## Good news: two fidelities
 
-## Tool 2: The Stand-In Model (Gaussian Process)
+Two fidelities:
 
-- A **Gaussian process** is a normal distribution over **whole functions** — not one number
-- It predicts a value **and** an **uncertainty** at every point
-- Uncertainty tells us **where to test next**: hopeful \& unsure
+- **Low-fidelity**: cheap & fast, but *biased*
+- **High-fidelity**: accurate, but only 15 runs
 
-## The Whole Pipeline
+How do we use the cheap low-didelity runs to guide the expensive high-fidelity ones?
 
-1. **Spread out** the starting points
-2. Feed in many **cheap** runs $\rightarrow$ a **rough map**
-3. Send **one expensive** run to the predicted valley
-4. **Repeat** — the map gets sharper every round
+## My simple idea
 
-## Our Question
+My idea is simple:
 
 $$
-\widehat{\boldsymbol{x}} \approx \argmin_{\boldsymbol{x}\in[0,1]^p} h_\mathrm{H}(\boldsymbol{x})
+h_k(\boldsymbol{x})=h_{k-1}(\boldsymbol{x})+\delta_k(\boldsymbol{x})
 $$
 
-- Goal: minimize the expensive function with only **15 precise runs**
-- Three small questions:
-  - Does **combining the channels** help?
-  - Does **screening** the parameters help?
-  - Does it still work **in high dimensions**?
+Learn the correction $\delta_k$ from a few high-fidelity runs
 
-## Answer 1: Combination Is the Key
+# Two simple ideas
 
-::: {.columns}
-::: {.column width="50%"}
-![Combination is the key](../figures/3.pdf){width=100%}
-:::
-::: {.column width="50%"}
-- Metric: **median** of the best found over 20 repeats — lower is better
-- Cheap + precise **beats** precise alone
-- 1-D: precise alone stuck at 0; with fusion $\rightarrow$ **global optimum**
-- 2-D: lands right next to the **known answer**
-:::
-:::
+## V. Roshan Joseph
 
-## Answer 2: Screening Is Useless
+::: {=latex}
+\begin{columns}[onlytextwidth]
+  \column{0.5\textwidth}
+  Where to put the first runs?
 
-::: {.columns}
-::: {.column width="50%"}
-![Screening is useless](../figures/4.pdf){width=100%}
-:::
-::: {.column width="50%"}
-- Screening **ranks** parameters by cheap runs
-- But cheap runs are **biased** $\rightarrow$ ranking is unreliable
-- Result: **removing** screening actually helps
-:::
+  --- \textbf{maxpro design}
+  
+  How to add runs one at a time?
+
+  --- \textbf{sequential design}
+  \column{0.4\textwidth}
+  \begin{figure}[htbp]
+    \includegraphics[width=\linewidth]{../figures/1.jpg}
+    \caption*{V. Roshan Joseph}
+  \end{figure}
+\end{columns}
 :::
 
-## Answer 3: High Dimensions Fail
+## First piece: maxpro design
 
-::: {.columns}
-::: {.column width="50%"}
-![High dimensions fail](../figures/5.pdf){width=100%}
-:::
-::: {.column width="50%"}
-- In 8-D, fusion **collapses** too
-- Too few precise points to **sketch an 8-D landscape**
-- Fusion is decisive — but it has a **ceiling**
-:::
-:::
+::: {=latex}
+\begin{columns}[onlytextwidth]
+  \column{0.5\textwidth}
+    \textbf{Maxpro}:
+    
+    \textbf{maximum projection}. spread out in the full space, and in \emph{every low-dimensional shadow}.
 
-## The Whole Picture
-
-::: {.columns}
-::: {.column width="55%"}
-![All results](../figures/6.pdf){height=65%}
-:::
-::: {.column width="45%"}
-- Low dims: full pipeline wins; drop fusion $\rightarrow$ breaks
-- High dims: **nothing works**
-- One line: **make every precise test count**; limit = dimensionality
-:::
+    \textbf{Critertion}:
+    
+    \begin{equation*}
+      \min_D\sum_{i=1}^{n}\prod_{j\neq i}\frac{1}{\sum_{k=1}^p\left(x_{ik}-x_{jk}\right)^2}
+    \end{equation*}    
+  \column{0.4\textwidth}
+  \begin{figure}[htbp]
+    \includegraphics[width=\linewidth]{../figures/2.pdf}
+    \caption*{The MaxPro Design}
+  \end{figure}
+\end{columns}
 :::
 
-## Future Directions
+## Second piece: Gaussian progress
 
-My Future Directions:
+- A **normal distribution** describes *one number*: the average, and how spread out
+- A **Gaussian process** is the same idea, but for a *whole function*: a whole curve, plus *how unsure* we are at each point
+- That *uncertainty* is the guide --- test where we are *hopeful and uncertain*
 
-1. **When is screening trustworthy**? — find the bias conditions
-2. **Tame high dimensions**? — add structure, or reduce dimension first
-3. **Real-world tool**: give it a budget — get the best plan
+## The whole pipeline
+
+1. Choose **starting points** --- spread out evenly
+2. Feed **many cheap low-fidelity points**; the GP draws a *rough map*
+3. Run **one expensive high-fidelity test** where the map says the *destination*
+4. **Repeat** --- the map gets sharper every round
+
+Map, guess, test, refine.
+
+## The formal question
+
+The formal question:
+
+$$
+\widehat{\boldsymbol{x}}\approx\argmin_{\boldsymbol{x}\in[0,1]^{p}}h_\mathrm{H}(\boldsymbol{x})
+$$
+
+Find the best point using only **15 high-fidelity tests**.
+
+Three smaller questions:
+
+1. Does **combining the two fidelities** help?
+2. Does **screening** help --- which parameters matter, drop the rest?
+3. Does it still work in **high dimensions**?
+
+## How I measure success
+
+- Run the pipeline **20 times** from scratch
+- Take the **median** of the 20 best values
+- **Lower is better** in every figure
+
+# What I found
+
+## Result 1: combining fidelities is the key
+
+::: {=latex}
+\begin{columns}[onlytextwidth]
+  \column{0.5\textwidth}
+  Don't just run the expensive one --- \textbf{bring a cheap one along to help}.
+  \column{0.4\textwidth}
+    \begin{center}
+      \includegraphics[width=\linewidth]{../figures/3.pdf}
+    \end{center}
+\end{columns}
+:::
+
+## Result 2: screening is useless
+
+::: {=latex}
+\begin{columns}[onlytextwidth]
+  \column{0.5\textwidth}
+  Screening sounds like it saves work, but it \textbf{costs you accuracy}
+  \column{0.4\textwidth}
+    \begin{center}
+      \includegraphics[width=\linewidth]{../figures/4.pdf}
+    \end{center}
+\end{columns}
+:::
+
+## Result 3: high demensions fail
+
+::: {=latex}
+\begin{columns}[onlytextwidth]
+  \column{0.5\textwidth}
+  In eight demensions, \textbf{hign demensions fail} --- \textbf{the curse of demensionality}.
+  \column{0.4\textwidth}
+    \begin{center}
+      \includegraphics[width=\linewidth]{../figures/5.pdf}
+    \end{center}
+\end{columns}
+:::
+
+## All results in one picture
+
+::: {=latex}
+\begin{center}
+  \includegraphics[width=0.7\linewidth]{../figures/6.pdf}
+\end{center}
+:::
+
+# Where I'd like to go next
+
+## Three directions next
+
+1. **When is screening trustworthy?**
+2. **Break the curse of dimensionality**
+3. **Push it into the real world**
 
 ## Summary
 
-- Not "more precise runs" — but "**more value per run**"
-- Limit: the **curse of high dimensions**
+Don't just \textbf{run more high-fidelity tests} --- \textbf{make every single one count}. Let cheap low-fidelity runs do the \textbf{heavy lifting}.
+
+That's \textbf{multi-fidelity}.
 
 ## {.standout}
 
-Thank you!
+Thank you for your listening!
