@@ -7,16 +7,16 @@ Research project on **multi-fidelity Bayesian optimization** — optimizing an e
 
 ## Overview
 
-The design parameters live in $\boldsymbol{x}\in[0,1]^{p}$, and the simulator is a black box $y=h(\boldsymbol{x})$. Two evaluation channels are available:
+The design parameters live in $\boldsymbol{x}\in\left[0,1\right]^{p}$, and the simulator is a black box $y=h\left(\boldsymbol{x}\right)$. Two evaluation channels are available:
 
 | Channel | Cost | Accuracy |
 | --- | --- | --- |
-| Low-fidelity $h_\mathrm{L}(\boldsymbol{x})$ | cheap, $c_\mathrm{L}$ | systematic bias |
-| High-fidelity $h_\mathrm{H}(\boldsymbol{x})$ | expensive, $c_\mathrm{H} \gg c_\mathrm{L}$ | accurate |
+| Low-fidelity $h_\mathrm{L}\left(\boldsymbol{x}\right)$ | cheap, $c_\mathrm{L}$ | systematic bias |
+| High-fidelity $h_\mathrm{H}\left(\boldsymbol{x}\right)$ | expensive, $c_\mathrm{H} \gg c_\mathrm{L}$ | accurate |
 
 The bias between the two fidelities is unknown. The formal goal is
 
-$$\widehat{\boldsymbol{x}}\approx\argmin_{\boldsymbol{x}\in[0,1]^{p}}h_\mathrm{H}(\boldsymbol{x}),$$
+$$\widehat{\boldsymbol{x}}\approx\argmin_{\boldsymbol{x}\in\left[0,1\right]^{p}}h_\mathrm{H}\left(\boldsymbol{x}\right),$$
 
 found as accurately as possible under a total budget of **15 high-fidelity evaluations**.
 
