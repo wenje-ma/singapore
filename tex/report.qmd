@@ -78,7 +78,7 @@ How do we use the cheap low-didelity runs to guide the expensive high-fidelity o
 My idea is simple:
 
 $$
-h_k(\boldsymbol{x})=h_{k-1}(\boldsymbol{x})+\delta_k(\boldsymbol{x})
+h_\mathrm{H}(\boldsymbol{x})=h_\mathrm{L}(\boldsymbol{x})+\delta(\boldsymbol{x})
 $$
 
 Learn the correction $\delta_k$ from a few high-fidelity runs
