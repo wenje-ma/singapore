@@ -138,7 +138,7 @@ Learn the correction $\delta_k$ from a few high-fidelity runs
 1. Choose **starting points** --- spread out evenly
 2. Feed **many cheap low-fidelity points**; the GP draws a *rough map*
 3. Run **one expensive high-fidelity test** where the map says the *destination*
-4. **Repeat** --- the map gets sharper every round
+4*. *Repeat** --- the map gets sharper every round
 
 Map, guess, test, refine.
 
@@ -217,9 +217,9 @@ Three smaller questions:
 
 ## Three directions next
 
-1. **When is screening trustworthy?**
-2. **Break the curse of dimensionality**
-3. **Push it into the real world**
+1*. *When is screening trustworthy?**
+2*. *Break the curse of dimensionality**
+3*. *Push it into the real world**
 
 ## Summary
 

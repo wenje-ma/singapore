@@ -2,7 +2,7 @@
 
 ## What is multi-fidelity?
 
-Hello everyone, I am **Wenje Ma**. Today I want to tell you about a piece of work I did. The full title is : **Research on Multi-Fidelity Data-Based Optimization Algorithms**. **Fidelity** just means how **faithful a test is**. A **high-fidelity** test is **expensive but precise**; a **low-fidelity** test is **cheap but a little off**. **Multi-fidelity** means we have **both**, and the question is how to use them **together** to find the best answer.
+Hello everyone, I am **Wenje Ma**. Today I want to tell you about a piece of work I did. The full title is : **Research on Multi-Fidelity Data-Based Optimization Algorithms***. *Fidelity** just means how **faithful a test is**. A **high-fidelity** test is **expensive but precise**; a **low-fidelity** test is **cheap but a little off***. *Multi-fidelity** means we have **both**, and the question is how to use them **together** to find the best answer.
 
 ## Here's my plan
 
@@ -12,7 +12,7 @@ Here's my **plan**. First, a **quick story** to set up the problem. Then the **t
 
 ## Testing is expensive, few chances
 
-Let me start with the **story**. Imagine you work for a company, and your job is to **tune parameters**. You have an **experiment**, but **every run costs money**. You can only afford **few runs** in total. Here's the hard part: **more than ten parameters**, and **they affect each other**. Change one, the others **move too** — like an engine: raise the pressure, and the **temperature and the fuel mix** all shift together. So you can't tune them **one at a time**. You need the **best combination of all at a time**, and you get only **few chances** to find it. What would you do? That is exactly the **problem I worked on**. And it's not just a story — **engines, materials, biology**: many real systems are exactly like this. **Testing is expensive, few chances.** So the further question is, how do you **spend a tiny budget smartly**?
+Let me start with the **story**. Imagine you work for a company, and your job is to **tune parameters**. You have an **experiment**, but **every run costs money**. You can only afford **few runs** in total. Here's the hard part: **more than ten parameters**, and **they affect each other**. Change one, the others **move too** — like an engine: raise the pressure, and the **temperature and the fuel mix** all shift together. So you can't tune them **one at a time**. You need the **best combination of all at a time**, and you get only **few chances** to find it. What would you do? That is exactly the **problem I worked on**. And it's not just a story — **engines, materials, biology**: many real systems are exactly like this*. *Testing is expensive, few chances.** So the further question is, how do you **spend a tiny budget smartly**?
 
 ## Why is it so hard? Two reasons
 
@@ -44,7 +44,7 @@ He gave us **two pieces**, and they map onto **two questions**. First, where do 
 
 ## First piece: maxpro design
 
-First piece — **where to start**. At the very beginning we **know nothing** about the function, so the first points should **cover the space evenly** — not piled in one corner, not overlapping. **Maxpro design** does exactly that. The name, **maximum projection**, means it keeps points spread out not just in the whole space, but in **every low-dimensional shadow**. So even if two points **look close** when you squash the space down, they're still **far apart** in the full space. The criterion is this equation, and the effect is in the figure:
+First piece — **where to start**. At the very beginning we **know nothing** about the function, so the first points should **cover the space evenly** — not piled in one corner, not overlapping*. *Maxpro design** does exactly that. The name, **maximum projection**, means it keeps points spread out not just in the whole space, but in **every low-dimensional shadow**. So even if two points **look close** when you squash the space down, they're still **far apart** in the full space. The criterion is this equation, and the effect is in the figure:
 $$
 \min_D\sum_{i=1}^{n}\prod_{j\neq i}\frac{1}{\sum_{k=1}^p\left(x_{ik}-x_{jk}\right)^2}
 $$
@@ -99,7 +99,7 @@ Third result: **high dimensions fail**. In **eight dimensions**, even **fusion s
 
 ![6.svg](../figures/6.svg){width=100%}
 
-Put **all the results** in one figure and the picture is **clear**. The **complete pipeline** is best in **low dimensions**. **Drop the fusion step**, and it **breaks even** in low dimensions. In **high dimensions**, nothing works. So it's not about **spending more money** on high-fidelity tests — it's about **making each precise test more valuable** by leaning on the cheap ones. And the limit is set by **how many dimensions** you're working in — the story just **gets worse the higher you go**.
+Put **all the results** in one figure and the picture is **clear**. The **complete pipeline** is best in **low dimensions***. *Drop the fusion step**, and it **breaks even** in low dimensions. In **high dimensions**, nothing works. So it's not about **spending more money** on high-fidelity tests — it's about **making each precise test more valuable** by leaning on the cheap ones. And the limit is set by **how many dimensions** you're working in — the story just **gets worse the higher you go**.
 
 # Where I'd like to go next
 
