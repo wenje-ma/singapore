@@ -1,96 +1,60 @@
-# Research on Multi-Fidelity Data-Based Optimization Algorithms
+# Singapore — Multi-Fidelity Bayesian Optimization
 
-Research project on **multi-fidelity Bayesian optimization** — optimizing an expensive black-box function when two evaluation channels are available: a cheap low-fidelity simulator with systematic bias, and an accurate but expensive high-fidelity simulator. Under an extremely small budget (15 high-fidelity equivalents), the project assembles a pipeline of experimental-design components and ablates each one to quantify its contribution.
+> **Research on Multi-Fidelity Data-Based Optimization Algorithms** — an ablatable R pipeline for optimizing expensive black-box functions when a cheap-but-biased low-fidelity simulator and an accurate-but-expensive high-fidelity simulator are both available, under a budget of only **15 high-fidelity-equivalent evaluations**.
 
-- **Author:** Wenje Ma — Beijing Institute of Technology, Mathematics and Applied Mathematics (Qiangji Program), 2024
-- **Advisor:** Dianpeng Wang
+**Author:** Wenje Ma (School of Mathematics and Statistics, Beijing Institute of Technology; Mathematics Qiang-Ji Program, 2024) · **Advisor:** Dianpeng Wang
 
-## Overview
+## The pipeline
 
-The design parameters live in $\boldsymbol{x}\in\left[0,1\right]^{p}$, and the simulator is a black box $y=h\left(\boldsymbol{x}\right)$. Two evaluation channels are available:
-
-| Channel | Cost | Accuracy |
-| --- | --- | --- |
-| Low-fidelity $h_\mathrm{L}\left(\boldsymbol{x}\right)$ | cheap, $c_\mathrm{L}$ | systematic bias |
-| High-fidelity $h_\mathrm{H}\left(\boldsymbol{x}\right)$ | expensive, $c_\mathrm{H} \gg c_\mathrm{L}$ | accurate |
-
-The bias between the two fidelities is unknown. The formal goal is
-
-$$\widehat{\boldsymbol{x}}\approx\argmin_{\boldsymbol{x}\in\left[0,1\right]^{p}}h_\mathrm{H}\left(\boldsymbol{x}\right),$$
-
-found as accurately as possible under a total budget of **15 high-fidelity evaluations**.
-
-## Pipeline
-
-The full pipeline **M1** combines four experimental-design components:
+**M1 (main pipeline):**
 
 ```
-MaxPro design → Sequential design → Nested (multi-fidelity) design → Expected improvement
+Maximum Projection design → Sequential design → Nested (multi-fidelity) design → Expected Improvement
 ```
 
-To attribute each component's contribution, three control configurations are tested:
+with three ablation controls:
 
-- **M0** — blank control: MaxPro design → Expected improvement
-- **S1** — M1 without the nested (fusion) design
-- **S2** — M1 without the sequential design
+- **M0** — MaxPro design → EI (no multi-fidelity machinery at all);
+- **S1** — nested design removed (no fusion);
+- **S2** — sequential stage removed.
 
-### Key findings
+Test functions: 1/2/4/8-dimensional suites (Joseph's 1-D function, Branin, a 4-factor additive function, the borehole flow model), each paired with a constructed biased low-fidelity version. Budget = 15 high-fidelity-equivalent evaluations at a 20:1 cost ratio; 20 repetitions per setting; median best-value reported.
 
-- **Fusion is the decisive component:** in 1-D it turns outright failure into feasibility and reaches the global optimum; in 2-D it approaches the Branin optimum; its value decays with dimension and fails in 8-D.
-- **Screening never helps — it even hurts:** the bias between low and high fidelity makes factor-importance ranking unreliable; removing the screening step improves results.
-- **High dimensions set the ceiling:** at 8 dimensions fusion stops working — the curse of dimensionality inside the multi-fidelity framework.
-- Under the same budget, a few high-fidelity points **with** fusion far outperform many high-fidelity points alone.
+## Key findings
+
+1. **Fusion (the nested design) is the decisive component.** It rescues a failing run in 1-D, approaches the Branin optimum in 2-D — and fails at 8-D (the curse of dimensionality inside the multi-fidelity framework).
+2. **Screening never helped.** The low↔high fidelity bias makes factor-importance rankings unreliable, so screening was at best useless and sometimes harmful.
+3. **Under the same budget, few high-fidelity points *with fusion* beat many high-fidelity points alone.**
 
 ## Repository structure
 
 ```
 singapore/
-├── codes/                  # R implementation of the pipeline
-│   ├── maxpro_design.R         # Maximum projection design
-│   ├── mofat_design.R          # Max one-factor-at-a-time design with projection
-│   ├── nested_design.R         # Nested (multi-fidelity) design
-│   ├── fit_KOH.R / predict_KOH.R   # Kennedy–O'Hagan fusion (Gaussian process)
-│   ├── EI.R                    # Expected improvement
-│   ├── project.R               # Main M1 / M0 / S1 / S2 pipeline
-│   ├── functions.R             # Test functions (1/2/4/8-D) + low-fidelity versions
-│   ├── calibrate.R / run_calibrate.R   # Calibration experiment
-│   ├── ablation.R  / run_ablation.R    # Ablation experiment
-│   ├── fig2.R … fig6.R         # Figure generation (fig1 is a portrait, not a plot)
-│   └── data/                   # Cached .RData results
-├── figures/                # Figures 1–6 (fig1 = V. Roshan Joseph portrait; fig2–6 = design/results)
-├── tex/                    # Quarto / Beamer slides and presentation materials
-│   ├── report.qmd             # Beamer slides (metropolis theme) → report.pdf
-│   ├── booklet.qmd             # A5 cue-card booklet (keyword page + spoken script) → booklet.pdf
-│   ├── speak.md               # Full spoken script
-│   └── keys.md                # Keyword cue cards
-└── README.md
+├── codes/
+│   ├── project.R            # Main pipeline (M1 / M0 / S1 / S2)
+│   ├── maxpro_design.R      # Maximum projection design
+│   ├── nested_design.R      # Nested multi-fidelity design
+│   ├── fit_KOH.R / predict_KOH.R   # Kennedy–O'Hagan autoregressive GP fusion
+│   ├── EI.R                 # Expected improvement
+│   ├── functions.R          # Test functions + low-fidelity versions
+│   ├── calibrate.R / run_calibrate.R   # Calibration experiments
+│   ├── ablation.R / run_ablation.R     # Ablation experiments
+│   ├── fig2.R … fig6.R      # Figure scripts
+│   ├── DESCRIPTION          # R-style project description (deps: lhs, SFDesign, MOFAT, rkriging)
+│   └── data/                # 23 cached .RData results (calibration d1–d8, ablations, summaries)
+├── figures/                 # Report figures (PDF + SVG)
+├── tex/
+│   ├── report.qmd → report.pdf   # Final slides (Beamer, Metropolis theme)
+│   ├── booklet.qmd → booklet.pdf # A5 prompt-card booklet
+│   └── speak.md / keys.md        # Chinese speaking notes & keyword cards
+├── notice.md                # (Chinese) travel checklist for the Singapore visit
+└── singapore.png
 ```
 
-## Getting started
+## Reproducing
 
-The code is written in **R** and requires the [`lhs`](https://cran.r-project.org/package=lhs) package.
+Run the R scripts in `codes/` (requires `lhs`, `SFDesign`, `MOFAT`, `rkriging`). Cached `.RData` results in `codes/data/` let figures be regenerated without re-running the expensive experiments. Presentations are compiled with Quarto (`quarto render tex/report.qmd`).
 
-```r
-# From the codes/ directory
-install.packages("lhs")
+## Related repositories
 
-# Run the calibration experiment
-source("run_calibrate.R")
-
-# Run the ablation experiment
-source("run_ablation.R")
-```
-
-Both experiments cache intermediate results as `.RData` files under `codes/data/`, so re-running with the same parameters skips completed repetitions.
-
-## Reproducibility
-
-- Results are cached in `codes/data/*.RData` (one file per configuration × dimension, plus summary files).
-- Test functions cover 1, 2, 4, and 8 dimensions (Joseph's 1-D test, the Branin function, a 4-factor additive function, and the borehole water-flow function), each with a constructed low-fidelity version.
-- Budget = 15 high-fidelity equivalents, cost ratio = 20, 20 repetitions per setting; success is the **median** best value across the 20 runs (lower is better).
-
-## Slides and presentation
-
-- `tex/report.qmd` → `tex/report.pdf` — the Beamer presentation (metropolis theme).
-- `tex/booklet.qmd` → `tex/booklet.pdf` — the A5 cue-card booklet used while presenting.
-- `tex/speak.md` — the full spoken script; `tex/keys.md` — the keyword cue cards.
+Built on the tooling reproduced in [ed4dse](https://github.com/wenje-ma/ed4dse) and grounded in the theory notes in [dace](https://github.com/wenje-ma/dace). Full list on the [profile page](https://github.com/wenje-ma).
