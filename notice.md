@@ -6,6 +6,6 @@
 
 推荐用国际漫游。
 
-提前3天填写入境卡<https://eservices.ica.gov.sg/sgarrivalcard/>。
+提前3天填写入境卡< https://eservices.ica.gov.sg/sgarrivalcard/> 。
 
 境外旅游保险？！
