@@ -11,7 +11,7 @@
 #   D2 = maxpro.remove(D1, n1-n2, delta=1/n1²), so the high-fidelity
 #   points are a subset of the low-fidelity locations (shared points).
 ##################################################################
-setwd("C:/Users/18904/Github/singapore/codes")
+setwd("D:/wenje-ma/singapore/codes")
 library(SFDesign)
 nested_design=function(n1,n2,p,seed=1){
   set.seed(seed)

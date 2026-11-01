@@ -9,7 +9,7 @@
 # data/ablation-<config>-d*.RData, and returns
 # fstars / bests / outs / seed.seq for that config.
 ##################################################################
-setwd("C:/Users/18904/Github/singapore/codes")
+setwd("D:/wenje-ma/singapore/codes")
 library(lhs)
 ablation=function(fH,fL,b,p,n2=5,budget=15,cost=20,nrep=20,config="M1",cand=NULL){
   data.dir="data"; if(!dir.exists(data.dir))dir.create(data.dir,recursive=TRUE)

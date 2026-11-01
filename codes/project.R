@@ -21,7 +21,7 @@
 # median; all fits use only the kept columns S.
 # Returns xstar (argmin yH), fstar, the best-trace, and budget used.
 ##################################################################
-setwd("C:/Users/18904/Github/singapore/codes")
+setwd("D:/wenje-ma/singapore/codes")
 library(lhs)
 project=function(fH,fL,p,xmin=rep(0,p),xmax=rep(1,p),screening=TRUE,multifidelity=TRUE,budget=15,cost=20,n2=3,m=3*p,nCandidate=5000,cand=NULL,seed=1){
   set.seed(seed)

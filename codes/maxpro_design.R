@@ -8,7 +8,7 @@
 # Built here via SFDesign::maxpro.optim starting from a random Latin
 # hypercube; this is the starting design of the pipeline.
 ##################################################################
-setwd("C:/Users/18904/Github/singapore/codes")
+setwd("D:/wenje-ma/singapore/codes")
 library(SFDesign);library(lhs)
 maxpro_design=function(n,p,seed=1){
   set.seed(seed)

@@ -32,7 +32,7 @@
 # total Sobol' index of the bias field δ(x) does the low-fidelity
 # importance ranking preserve the true high-fidelity ranking?
 ##################################################################
-setwd("C:/Users/18904/Github/singapore/codes")
+setwd("D:/wenje-ma/singapore/codes")
 rm(list=ls())
 data.dir="data"; if(!dir.exists(data.dir))dir.create(data.dir,recursive=TRUE)
 source("maxpro_design.R")

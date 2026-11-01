@@ -4,7 +4,7 @@
 # Reproduces figures/6.pdf: a shared-range 2x2 panel of the four
 # configs across d1/d2/d4/d8 on the same y-axis.
 ##################################################################
-setwd("C:/Users/18904/Github/singapore/codes")
+setwd("D:/wenje-ma/singapore/codes")
 if(!dir.exists("data"))dir.create("data")
 if(!dir.exists("../figures"))dir.create("../figures")
 e=new.env();load("data/ablation-summary.RData",envir=e);tab=e$tab

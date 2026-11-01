@@ -5,7 +5,7 @@
 # [0,1]^2 with its grid lines. Gray theme (points #222222, grid
 # #bbbbbb, frame #666666).
 ##################################################################
-setwd("C:/Users/18904/Github/singapore/codes")
+setwd("D:/wenje-ma/singapore/codes")
 if(!dir.exists("data"))dir.create("data")
 if(!dir.exists("../figures"))dir.create("../figures")
 if(!file.exists("data/2-plot.RData")){

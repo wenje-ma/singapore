@@ -9,7 +9,7 @@
 #   δ = yH - ŷL(D2), and fit fitD (Kriging) on (D2, δ).
 # Non-multifidelity mode returns fitD = NULL.
 ##################################################################
-setwd("C:/Users/18904/Github/singapore/codes")
+setwd("D:/wenje-ma/singapore/codes")
 fit_KOH=function(D1,yL,D2=NULL,yH=NULL,multifidelity=TRUE){
   library(rkriging)
   fitL=Fit.Kriging(D1,yL,kernel.parameters=list(type="Gaussian"))

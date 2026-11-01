@@ -11,7 +11,7 @@
 # the room left for the sequential and fusion components is squeezed
 # out almost entirely by the budget.
 ##################################################################
-setwd("C:/Users/18904/Github/singapore/codes")
+setwd("D:/wenje-ma/singapore/codes")
 library(lhs)
 calibrate=function(fH,fL,b,p,budget,cost,n2.grid,nrep){
   nm=paste0("d",b)

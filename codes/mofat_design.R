@@ -14,7 +14,7 @@
 # Built via MOFAT::mofat(p, m, method="projection"), split into
 # blocks A, C1, C2 used to estimate each factor's total effect.
 ##################################################################
-setwd("C:/Users/18904/Github/singapore/codes")
+setwd("D:/wenje-ma/singapore/codes")
 mofat_design=function(p,m,seed=1){
   library(MOFAT);set.seed(seed)
   Dm=mofat(p,m,method="projection")

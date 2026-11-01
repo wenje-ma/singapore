@@ -4,7 +4,7 @@
 # Reproduces figures/3.pdf: median found-minimum f* in 1/2/4-D,
 # comparing high-fidelity alone (M0) vs high+low fusion (S2).
 ##################################################################
-setwd("C:/Users/18904/Github/singapore/codes")
+setwd("D:/wenje-ma/singapore/codes")
 if(!dir.exists("data"))dir.create("data")
 if(!dir.exists("../figures"))dir.create("../figures")
 e=new.env();load("data/ablation-summary.RData",envir=e);tab=e$tab

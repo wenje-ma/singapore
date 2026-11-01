@@ -19,7 +19,7 @@
 # with the concrete constants (eqs 24-27): d1 c=0.3, d2 c=40,
 # d4 c=0.5, d8 c=70.
 ##################################################################
-setwd("C:/Users/18904/Github/singapore/codes")
+setwd("D:/wenje-ma/singapore/codes")
 fH1=function(u){
   x=u[1]
   sin(10*pi*x)/(1+64*(x-0.25)^2)+x^2

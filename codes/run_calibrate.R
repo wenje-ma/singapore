@@ -8,7 +8,7 @@
 #   n2*: d1 = 2 , d2 = 14 , d4 = 14 , d8 = 14
 # (the n2 with the smallest median found-minimum f*).
 ##################################################################
-setwd("C:/Users/18904/Github/singapore/codes")
+setwd("D:/wenje-ma/singapore/codes")
 rm(list=ls())
 data.dir="data"; if(!dir.exists(data.dir))dir.create(data.dir,recursive=TRUE)
 source("maxpro_design.R")

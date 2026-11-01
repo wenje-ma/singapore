@@ -4,7 +4,7 @@
 # Reproduces figures/5.pdf: found-minimum f* at 8-D for all four
 # configs M1 / S1 / S2 / M0.
 ##################################################################
-setwd("C:/Users/18904/Github/singapore/codes")
+setwd("D:/wenje-ma/singapore/codes")
 if(!dir.exists("data"))dir.create("data")
 if(!dir.exists("../figures"))dir.create("../figures")
 e=new.env();load("data/ablation-summary.RData",envir=e);tab=e$tab

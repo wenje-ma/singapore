@@ -8,7 +8,7 @@
 #   mean = ŷL + ŷδ ,  sd² = sd_L² + sd_δ²   (quadrature).
 # Without fitD it degrades to the plain low-fidelity prediction.
 ##################################################################
-setwd("C:/Users/18904/Github/singapore/codes")
+setwd("D:/wenje-ma/singapore/codes")
 predict_KOH=function(fit,x){
   if(is.null(dim(x)))x=matrix(x,nrow=1)
   pL=Predict.Kriging(fit$fitL,x)

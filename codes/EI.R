@@ -11,7 +11,7 @@
 # (balances optimization against surrogate accuracy). s_n is floored
 # at 1e-10; higher EI = more promising point.
 ##################################################################
-setwd("C:/Users/18904/Github/singapore/codes")
+setwd("D:/wenje-ma/singapore/codes")
 EI=function(x,hmin,fit){
   p=predict_KOH(fit,x)
   s=max(p$sd,1e-10);u=(hmin-p$mean)/s
