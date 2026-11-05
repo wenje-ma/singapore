@@ -117,8 +117,8 @@ Learn the correction $\delta_k$ from a few high-fidelity runs
     \textbf{Critertion}:
     
     \begin{equation*}
-      \min_D\sum_{i=1}^{n}\prod_{j\neq i}\frac{1}{\sum_{k=1}^p\left(x_{ik}-x_{jk}\right)^2}
-    \end{equation*}    
+\min_D\sum_{i=1}^{n}\prod_{j\neq{i}}\frac{1}{\sum_{k=1}^p\left(x_{ik}-x_{jk}\right)^2}
+\end{equation*}    
   \column{0.4\textwidth}
   \begin{figure}[htbp]
     \includegraphics[width=\linewidth]{../figures/2.pdf}

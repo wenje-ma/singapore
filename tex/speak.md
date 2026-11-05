@@ -46,7 +46,7 @@ He gave us **two pieces**, and they map onto **two questions**. First, where do 
 
 First piece — **where to start**. At the very beginning we **know nothing** about the function, so the first points should **cover the space evenly** — not piled in one corner, not overlapping*. *Maxpro design** does exactly that. The name, **maximum projection**, means it keeps points spread out not just in the whole space, but in **every low-dimensional shadow**. So even if two points **look close** when you squash the space down, they're still **far apart** in the full space. The criterion is this equation, and the effect is in the figure:
 $$
-\min_D\sum_{i=1}^{n}\prod_{j\neq i}\frac{1}{\sum_{k=1}^p\left(x_{ik}-x_{jk}\right)^2}
+\min_D\sum_{i=1}^{n}\prod_{j\neq{i}}\frac{1}{\sum_{k=1}^p\left(x_{ik}-x_{jk}\right)^2}
 $$
 
 ![2.svg](../figures/2.svg){width=50%}
