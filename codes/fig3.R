@@ -1,12 +1,6 @@
-##################################################################
-# fig3.R — figure: fusion matters
-#
-# Reproduces figures/3.pdf: median found-minimum f* in 1/2/4-D,
-# comparing high-fidelity alone (M0) vs high+low fusion (S2).
-##################################################################
 setwd("D:/wenje-ma/singapore/codes")
-if(!dir.exists("data"))dir.create("data")
-if(!dir.exists("../figures"))dir.create("../figures")
+if(!dir.exists("data")) dir.create("data")
+if(!dir.exists("../figures")) dir.create("../figures")
 e=new.env();load("data/ablation-summary.RData",envir=e);tab=e$tab
 dims=c("d1","d2","d4")
 v=rbind("high"=as.numeric(tab[tab$config=="M0",dims]),"high + low"=as.numeric(tab[tab$config=="S2",dims]))

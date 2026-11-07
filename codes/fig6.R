@@ -1,12 +1,6 @@
-##################################################################
-# fig6.R — figure: the whole picture
-#
-# Reproduces figures/6.pdf: a shared-range 2x2 panel of the four
-# configs across d1/d2/d4/d8 on the same y-axis.
-##################################################################
 setwd("D:/wenje-ma/singapore/codes")
-if(!dir.exists("data"))dir.create("data")
-if(!dir.exists("../figures"))dir.create("../figures")
+if(!dir.exists("data")) dir.create("data")
+if(!dir.exists("../figures")) dir.create("../figures")
 e=new.env();load("data/ablation-summary.RData",envir=e);tab=e$tab
 cols=c(M1="#555555",S1="#222222",S2="#888888",M0="#bbbbbb")
 lbl=c(d1="1-D",d2="2-D",d4="4-D",d8="8-D")

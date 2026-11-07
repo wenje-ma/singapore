@@ -1,13 +1,6 @@
-##################################################################
-# fig2.R — figure: the maxpro design in 2-D
-#
-# Reproduces figures/2.pdf: a 7-point maximum projection design on
-# [0,1]^2 with its grid lines. Gray theme (points #222222, grid
-# #bbbbbb, frame #666666).
-##################################################################
 setwd("D:/wenje-ma/singapore/codes")
-if(!dir.exists("data"))dir.create("data")
-if(!dir.exists("../figures"))dir.create("../figures")
+if(!dir.exists("data")) dir.create("data")
+if(!dir.exists("../figures")) dir.create("../figures")
 if(!file.exists("data/2-plot.RData")){
   p=2;n=7;library(SFDesign);library(lhs);set.seed(1)
   D=maxpro.optim(randomLHS(n,p))$design

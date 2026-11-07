@@ -1,12 +1,6 @@
-##################################################################
-# fig4.R — figure: screening is useless
-#
-# Reproduces figures/4.pdf: median found-minimum f* in 1/2/4-D,
-# comparing with-screening (M1) vs no-screening (S2).
-##################################################################
 setwd("D:/wenje-ma/singapore/codes")
-if(!dir.exists("data"))dir.create("data")
-if(!dir.exists("../figures"))dir.create("../figures")
+if(!dir.exists("data")) dir.create("data")
+if(!dir.exists("../figures")) dir.create("../figures")
 e=new.env();load("data/ablation-summary.RData",envir=e);tab=e$tab
 draw=function(){
   oldpar=par(mar=c(2,3,1,1),mgp=c(1.5,0.5,0))

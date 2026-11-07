@@ -1,12 +1,6 @@
-##################################################################
-# fig5.R — figure: high dimensions fail
-#
-# Reproduces figures/5.pdf: found-minimum f* at 8-D for all four
-# configs M1 / S1 / S2 / M0.
-##################################################################
 setwd("D:/wenje-ma/singapore/codes")
-if(!dir.exists("data"))dir.create("data")
-if(!dir.exists("../figures"))dir.create("../figures")
+if(!dir.exists("data")) dir.create("data")
+if(!dir.exists("../figures")) dir.create("../figures")
 e=new.env();load("data/ablation-summary.RData",envir=e);tab=e$tab
 cols=c(M1="#555555",S1="#222222",S2="#888888",M0="#bbbbbb")
 draw=function(){

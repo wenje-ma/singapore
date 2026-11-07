@@ -1,18 +1,7 @@
-##################################################################
-# ablation.R — ablation experiment (component contribution)
-#
-# Configs (screening, fusion):
-#   M1 (yes, yes) full pipeline ; S2 (no, yes) fusion only
-#   S1 (yes, no)  screening only ; M0 (no, no) blank (single-fidelity EI)
-# For one config, runs the pipeline nrep times with a forced n2 = 5
-# (so the configs stay distinguishable), caches results to
-# data/ablation-<config>-d*.RData, and returns
-# fstars / bests / outs / seed.seq for that config.
-##################################################################
 setwd("D:/wenje-ma/singapore/codes")
 library(lhs)
 ablation=function(fH,fL,b,p,n2=5,budget=15,cost=20,nrep=20,config="M1",cand=NULL){
-  data.dir="data"; if(!dir.exists(data.dir))dir.create(data.dir,recursive=TRUE)
+  data.dir="data";if(!dir.exists(data.dir)) dir.create(data.dir,recursive=TRUE)
   scr=switch(config,M1=c(TRUE,TRUE),S2=c(FALSE,TRUE),S1=c(TRUE,FALSE),M0=c(FALSE,FALSE))
   screening=scr[1];multifidelity=scr[2]
   nm=paste0("ablation-",config,"-d",b)
